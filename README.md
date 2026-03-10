@@ -11,7 +11,7 @@ The app allows users to create their own profile, record what they have watched,
 
 The goal of this project is to organize and manage personal viewing history while practicing object-oriented programming concepts such as encapsulation, inheritance, and data management.
 
-## Planned Features
+## Features
 * [x] Creating the ReadMe
 * [ ] Create user profile
 * [ ] Add movies and TV series
@@ -34,8 +34,5 @@ The goal of this project is to organize and manage personal viewing history whil
 
 ## Academic Context
 
-This project is developed for the **Object-Oriented Programming 2 (OOP 2)** course at
+This project is developed for the **Object-Oriented Programming 2** course at
 **Faculty of Mathematics and Computer Science – University of Bucharest**.
-
-* structură de foldere
-* și un mic **diagram overview al claselor** (profii apreciază mult asta).
