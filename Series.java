@@ -1,21 +1,33 @@
+import java.util.ArrayList;
+import java.util.List;
 
-class Series
+public class Series extends Media
 {
-    private String title;
-    private String releaseDate;
-    private String genre;
-    private String director;    
-    private String description;
+    private String director;
     private String company;
-    private Series(String title, String releaseDate, String genre, String director, String description, String company)
-    {
-        this.title = title;
-        this.releaseDate = releaseDate;
-        this.genre = genre;
+    private List<Episode> episodes;
+
+    public Series(String title, String releaseDate, String genre, String description,
+                  String director, String company) {
+
+        super(title, releaseDate, genre, description);
         this.director = director;
-        this.description = description;
         this.company = company;
+        this.episodes = new ArrayList<>();
+    }
+
+    public void addEpisode(Episode episode) {
+        episodes.add(episode);
+    }
+
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public String getDirector() {
+        return director;
     }
 }
+
 
 

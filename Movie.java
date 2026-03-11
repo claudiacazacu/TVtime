@@ -1,19 +1,21 @@
-class Movie
+import java.util.ArrayList;
+import java.util.List;
+
+public class Movie extends Media
 {
-    private String title;
-    private String releaseDate;
-    private String genre;
     private String director;
-    private String description;
     private String company;
 
-    private Movie(String title, String releaseDate, String genre, String director, String description, String company)
-    {
-        this.title = title;
-        this.releaseDate = releaseDate;
-        this.genre = genre;
+    public Series(String title, String releaseDate, String genre, String description,
+                  String director, String company) {
+
+        super(title, releaseDate, genre, description);
         this.director = director;
-        this.description = description;
         this.company = company;
     }
+
+    public String getDirector() {
+        return director;
+    }
+
 }
