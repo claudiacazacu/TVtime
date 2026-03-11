@@ -3,6 +3,10 @@
 **TV Time** is a Java application designed to help users keep track of the movies and TV series they watch.
 The app allows users to create their own profile, record what they have watched, rate episodes or movies, leave comments, and choose their favorite characters.
 
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+![Language](https://img.shields.io/badge/language-Java-orange)
+![OOP](https://img.shields.io/badge/OOP-project-blue)
+
 ---
 
 ## Project Status
@@ -12,17 +16,19 @@ The app allows users to create their own profile, record what they have watched,
 The goal of this project is to organize and manage personal viewing history while practicing object-oriented programming concepts such as encapsulation, inheritance, and data management.
 
 ## Features
-* [x] Creating the ReadMe
-* [ ] Create user profile
-* [ ] Add movies and TV series
-* [ ] Mark movies or episodes as watched
-* [ ] Rate movies or episodes
-* [ ] Leave comments or reviews
-* [ ] Select a favorite character
-* [ ] Create and manage a watchlist
-* [ ] Filter productions by genre or rating
-* [ ] Viewing history tracking
-* [ ] Statistics about watched media
+
+- [x] Create project README
+- [x] Implement core media hierarchy (Media, Movie, Series, Episode)
+- [x] Implement user profiles
+- [x] Implement service layer for managing application data
+- [ ] Track watched movies and episodes
+- [ ] Add rating system for movies and episodes
+- [ ] Add comments or reviews for media
+- [ ] Select and store favorite characters
+- [ ] Implement personal watchlist
+- [ ] Filter media by genre or rating
+- [ ] Track viewing history
+- [ ] Generate statistics about watched media
 
 ## Technologies
 
