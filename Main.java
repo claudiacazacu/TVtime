@@ -1,33 +1,24 @@
-class User
-{
-    private String username;
-    private Int age;
-    private String email;
+public class Main {
 
-    private User(String username, Int age, String email)
-    {
-        this.username = username;
-        this.age = age;
-        this.email = email;
-    } 
-}
+    public static void main(String[] args) {
 
-class Movie
-{
-    private String title;
-    private String releaseDate;
-    private String genre;
-    private String director;
-    private String description;
-    private String company;
+        Service service = new Service();
 
-    privaterfjMovie(String title, String releaseDate, String genre, String director, String description, String company)
-    {
-        this.title = title;
-        this.releaseDate = releaseDate;
-        this.genre = genre;
-        this.director = director;
-        this.description = description;
-        this.company = company;
+        User u1 = new User("Ana", 20, "ana@mail.com");
+        service.addUser(u1);
+
+        Movie movie = new Movie(
+                "Interstellar",
+                "2014",
+                "Sci-Fi",
+                "Space exploration movie",
+                "Christopher Nolan",
+                "Warner Bros"
+        );
+
+        service.addMedia(movie);
+
+        service.showAllUsers();
+        service.showAllMedia();
     }
 }

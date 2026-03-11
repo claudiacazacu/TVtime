@@ -4,7 +4,7 @@ public abstract class Media {
     protected String genre;
     protected String description;
 
-    public Media(String title, String releaseDate, String genre, String director, String description, String company)
+    public Media(String title, String releaseDate, String genre, String description)
     {
         this.title = title;
         this.releaseDate = releaseDate;

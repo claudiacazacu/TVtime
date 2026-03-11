@@ -1,11 +1,11 @@
-class Comment
+public class Comment
 {
     private String author;
     private String text;
 
-    private Comment(String autor, String text)
+    public Comment(String author, String text)
     {
-        this.autor = autor;
+        this.author = author;
         this.text = text;
     }
 }

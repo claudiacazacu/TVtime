@@ -1,16 +1,16 @@
-class Character 
+public class Character 
 {
-    private String nume;
-    private String numeReal;
-    private String dataNasterii;
-    private String descriere;
+    private String name;
+    private String realName;
+    private String birthDate;
+    private String description;
 
-    private Character(String nume, String numeReal, String dataNasterii, String descriere)
+    public Character(String name, String realName, String birthDate, String description)
     {
-        this.nume = nume;
-        this.numeReal = numeReal;
-        this.dataNasterii = dataNasterii;
-        this.descriere = descriere;
+        this.name = name;
+        this.realName = realName;
+        this.birthDate = birthDate;
+        this.description = description;
     }
 }
 
