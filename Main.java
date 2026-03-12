@@ -12,7 +12,8 @@ public class Main {
                 "Gossip Girl",
                 "How I Met Your Mother",
                 "Revenge",
-                "And Just Like That"
+                "And Just Like That",
+                "Suits"
         );
 
         Movie movie = new Movie(
