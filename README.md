@@ -11,7 +11,7 @@ The app allows users to create their own profile, record what they have watched,
 
 ## Project Status
 
-🚧 This project is currently under development.
+This project is currently under development.
 
 The goal of this project is to organize and manage personal viewing history while practicing object-oriented programming concepts such as encapsulation, inheritance, and data management.
 
@@ -37,8 +37,12 @@ The goal of this project is to organize and manage personal viewing history whil
 * Java Collections (List, Set, Map)
 * JDBC (planned for database integration)
 
+## Project Structure
+
+The Java sources are stored under `src/main/java`.
+Duplicate root-level `.java` files were removed so the project uses a single source tree.
 
 ## Academic Context
 
 This project is developed for the **Object-Oriented Programming 2** course at
-**Faculty of Mathematics and Computer Science – University of Bucharest**.
+**Faculty of Mathematics and Computer Science - University of Bucharest**.

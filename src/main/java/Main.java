@@ -1,19 +1,18 @@
 public class Main {
 
     public static void main(String[] args) {
-
         Service service = new Service();
 
-        User u1 = new User("Ana", 20, "ana@mail.com");
-        service.addUser(u1);
+        User user = new User("Ana", 20, "ana@mail.com");
+        service.addUser(user);
 
         Series series = new Series(
                 "Desperate Housewives",
-                "Gossip Girl",
-                "How I Met Your Mother",
-                "Revenge",
-                "And Just Like That",
-                "Suits"
+                "2004",
+                "Drama",
+                "A suburban mystery-drama series.",
+                "Marc Cherry",
+                "ABC Studios"
         );
 
         Movie movie = new Movie(
@@ -25,9 +24,11 @@ public class Main {
                 "Warner Bros"
         );
 
+        service.addMedia(series);
         service.addMedia(movie);
 
         service.showAllUsers();
         service.showAllMedia();
+        service.showAllGenres();
     }
 }
