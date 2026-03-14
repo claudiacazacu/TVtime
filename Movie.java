@@ -15,4 +15,14 @@ public class Movie extends Media
         return director;
     }
 
+    @Override
+    public String toString() {
+        return "Movie{" +
+            "title='" + title + '\'' +
+            ", releaseDate='" + releaseDate + '\'' +
+            ", genre='" + genre + '\'' +
+            ", director='" + director + '\'' +
+            ", company='" + company + '\'' +
+            '}';
+    }
 }

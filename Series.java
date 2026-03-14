@@ -27,6 +27,17 @@ public class Series extends Media
     public String getDirector() {
         return director;
     }
+
+    @Override
+    public String toString() {
+        return "Series{" +
+            "title='" + title + '\'' +
+            ", genre='" + genre + '\'' +
+            ", director='" + director + '\'' +
+            ", company='" + company + '\'' +
+            ", episodes=" + episodes.size() +
+            '}';
+    }
 }
 
 
