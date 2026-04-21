@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class Service {
@@ -45,5 +47,112 @@ public class Service {
         for (String genre : genres) {
             System.out.println(genre);
         }
+    }
+
+    public List<Media> searchMediaByTitle(String titleQuery) {
+        List<Media> results = new ArrayList<>();
+        if (titleQuery == null || titleQuery.trim().isEmpty()) {
+            return results;
+        }
+
+        String normalizedQuery = titleQuery.trim().toLowerCase(Locale.ROOT);
+        for (Media media : mediaLibrary) {
+            if (media.getTitle().toLowerCase(Locale.ROOT).contains(normalizedQuery)) {
+                results.add(media);
+            }
+        }
+
+        results.sort(Comparator.comparing(Media::getTitle));
+        return results;
+    }
+
+    public void showMovies() {
+        mediaLibrary.stream()
+                .filter(media -> media instanceof Movie)
+                .sorted(Comparator.comparing(Media::getTitle))
+                .forEach(System.out::println);
+    }
+
+    public void showSeries() {
+        mediaLibrary.stream()
+                .filter(media -> media instanceof Series)
+                .sorted(Comparator.comparing(Media::getTitle))
+                .forEach(System.out::println);
+    }
+
+    public List<Media> filterMediaByGenre(String genre) {
+        List<Media> filteredMedia = new ArrayList<>();
+        if (genre == null || genre.trim().isEmpty()) {
+            return filteredMedia;
+        }
+
+        String normalizedGenre = genre.trim().toLowerCase(Locale.ROOT);
+        for (Media media : mediaLibrary) {
+            if (media.getGenre().toLowerCase(Locale.ROOT).equals(normalizedGenre)) {
+                filteredMedia.add(media);
+            }
+        }
+
+        filteredMedia.sort(Comparator.comparing(Media::getTitle));
+        return filteredMedia;
+    }
+
+    public void showCastForMedia(String mediaTitle) {
+        Media media = findMediaByExactTitle(mediaTitle);
+        if (media == null) {
+            System.out.println("Media not found.");
+            return;
+        }
+
+        if (media.getCast().isEmpty()) {
+            System.out.println("No cast available for " + media.getTitle() + ".");
+            return;
+        }
+
+        for (Map.Entry<String, Character> castEntry : media.getCast().entrySet()) {
+            System.out.println(castEntry.getKey() + " -> " + castEntry.getValue());
+        }
+    }
+
+    public boolean addEpisodeToSeries(String seriesTitle, Episode episode) {
+        if (episode == null) {
+            return false;
+        }
+
+        Media media = findMediaByExactTitle(seriesTitle);
+        if (!(media instanceof Series)) {
+            return false;
+        }
+
+        ((Series) media).addEpisode(episode);
+        return true;
+    }
+
+    public boolean addReviewToWatchEntry(WatchEntry watchEntry, double rating, Comment comment) {
+        if (watchEntry == null || rating < 0.0 || rating > 10.0) {
+            return false;
+        }
+
+        watchEntry.setRating(rating);
+        if (comment != null) {
+            watchEntry.setComment(comment);
+        }
+
+        return true;
+    }
+
+    private Media findMediaByExactTitle(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            return null;
+        }
+
+        String normalizedTitle = title.trim();
+        for (Media media : mediaLibrary) {
+            if (media.getTitle().equalsIgnoreCase(normalizedTitle)) {
+                return media;
+            }
+        }
+
+        return null;
     }
 }

@@ -12,5 +12,10 @@ public class Character
         this.birthDate = birthDate;
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return name + " (" + realName + ")";
+    }
 }
 
