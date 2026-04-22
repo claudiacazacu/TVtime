@@ -8,11 +8,13 @@ import java.util.TreeSet;
 public class Service {
     private List<User> users;
     private List<Media> mediaLibrary;
+    private List<WatchEntry> watchEntries;
     private TreeSet<String> genres;
 
     public Service() {
         this.users = new ArrayList<>();
         this.mediaLibrary = new ArrayList<>();
+        this.watchEntries = new ArrayList<>();
         this.genres = new TreeSet<>();
     }
 
@@ -26,6 +28,12 @@ public class Service {
         if (media != null) {
             mediaLibrary.add(media);
             genres.add(media.getGenre());
+        }
+    }
+
+    public void addWatchEntry(WatchEntry watchEntry) {
+        if (watchEntry != null) {
+            watchEntries.add(watchEntry);
         }
     }
 
@@ -141,7 +149,86 @@ public class Service {
         return true;
     }
 
-    private Media findMediaByExactTitle(String title) {
+    public void showCommentsForMedia(String title) {
+        Media media = findMediaByExactTitle(title);
+        if (media == null) {
+            System.out.println("Productia nu exista.");
+            return;
+        }
+
+        boolean hasComments = false;
+        System.out.println("Comentarii pentru " + media.getTitle() + ":");
+        for (WatchEntry watchEntry : watchEntries) {
+            if (watchEntry.getMedia().getTitle().equalsIgnoreCase(media.getTitle())
+                    && watchEntry.getComment() != null) {
+                hasComments = true;
+                System.out.println("Utilizator: " + watchEntry.getUser().getUsername());
+                System.out.println("Rating: " + watchEntry.getRating());
+                System.out.println("Comentariu: " + watchEntry.getComment().getText());
+                System.out.println();
+            }
+        }
+
+        if (!hasComments) {
+            System.out.println("Nu exista comentarii pentru aceasta productie.");
+        }
+    }
+
+    public void showUserProfile(String username) {
+        User user = findUserByUsername(username);
+        if (user == null) {
+            System.out.println("Utilizatorul nu exista.");
+            return;
+        }
+
+        boolean hasWatchEntries = false;
+        System.out.println("Profil utilizator: " + user.getUsername());
+        for (WatchEntry watchEntry : watchEntries) {
+            if (watchEntry.getUser().getUsername().equalsIgnoreCase(user.getUsername())) {
+                hasWatchEntries = true;
+                System.out.println("Titlu media: " + watchEntry.getMedia().getTitle());
+                if (watchEntry.getEpisode() != null) {
+                    System.out.println("Episod: " + watchEntry.getEpisode().getTitle());
+                } else {
+                    System.out.println("Episod: -");
+                }
+                System.out.println("Data vizionarii: " + watchEntry.getWatchedDate());
+                System.out.println("Rating: " + watchEntry.getRating());
+                if (watchEntry.getComment() != null) {
+                    System.out.println("Comentariu: " + watchEntry.getComment().getText());
+                } else {
+                    System.out.println("Comentariu: -");
+                }
+                if (watchEntry.getFavCharacter() != null) {
+                    System.out.println("Personaj favorit: " + watchEntry.getFavCharacter().getName());
+                } else {
+                    System.out.println("Personaj favorit: -");
+                }
+                System.out.println();
+            }
+        }
+
+        if (!hasWatchEntries) {
+            System.out.println("Utilizatorul nu are vizionari inregistrate.");
+        }
+    }
+
+    public User findUserByUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return null;
+        }
+
+        String normalizedUsername = username.trim();
+        for (User user : users) {
+            if (user.getUsername().equalsIgnoreCase(normalizedUsername)) {
+                return user;
+            }
+        }
+
+        return null;
+    }
+
+    public Media findMediaByExactTitle(String title) {
         if (title == null || title.trim().isEmpty()) {
             return null;
         }

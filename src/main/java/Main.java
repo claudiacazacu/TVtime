@@ -68,7 +68,10 @@ public class Main {
             System.out.println("11 - Afiseaza cast pentru o productie");
             System.out.println("12 - Adauga episod la un serial");
             System.out.println("13 - Adauga rating/comment la un watch entry");
-            System.out.println("14 - Iesire");
+            System.out.println("14 - Creare watch entry");
+            System.out.println("15 - Afiseaza comentarii pentru o productie");
+            System.out.println("16 - Afiseaza profil utilizator");
+            System.out.println("17 - Iesire");
             System.out.print("\nOptiunea aleasa este ... ");
             optiune = scanner.nextInt();
             scanner.nextLine();
@@ -275,22 +278,8 @@ public class Main {
                     System.out.print("Text comentariu: ");
                     String commentText = scanner.nextLine();
 
-                    User foundUser = null;
-                    for (User user : users) {
-                        if (user.getUsername().equalsIgnoreCase(reviewUsername)) {
-                            foundUser = user;
-                            break;
-                        }
-                    }
-
-                    Media foundMedia = null;
-                    List<Media> allMatches = service.searchMediaByTitle(reviewMediaTitle);
-                    for (Media media : allMatches) {
-                        if (media.getTitle().equalsIgnoreCase(reviewMediaTitle)) {
-                            foundMedia = media;
-                            break;
-                        }
-                    }
+                    User foundUser = service.findUserByUsername(reviewUsername);
+                    Media foundMedia = service.findMediaByExactTitle(reviewMediaTitle);
 
                     Episode foundEpisode = null;
                     if (foundMedia instanceof Series && !reviewEpisodeTitle.trim().isEmpty()) {
@@ -319,6 +308,7 @@ public class Main {
                     boolean reviewAdded = service.addReviewToWatchEntry(watchEntry, rating, comment);
 
                     if (reviewAdded) {
+                        service.addWatchEntry(watchEntry);
                         System.out.println("Review adaugat cu succes:");
                         System.out.println(watchEntry);
                     } else {
@@ -327,6 +317,96 @@ public class Main {
                     break;
 
                 case 14:
+                    System.out.println("Creare watch entry.");
+
+                    System.out.print("Username: ");
+                    String watchUsername = scanner.nextLine();
+
+                    System.out.print("Titlu media: ");
+                    String watchMediaTitle = scanner.nextLine();
+
+                    System.out.print("Titlu episod (sau lasa gol daca nu exista): ");
+                    String watchEpisodeTitle = scanner.nextLine();
+
+                    System.out.print("Data vizionarii: ");
+                    String watchDate = scanner.nextLine();
+
+                    System.out.print("Rating (0-10): ");
+                    double watchRating = scanner.nextDouble();
+                    scanner.nextLine();
+
+                    System.out.print("Text comentariu (sau lasa gol): ");
+                    String watchCommentText = scanner.nextLine();
+
+                    System.out.print("Personaj favorit (sau lasa gol): ");
+                    String favoriteCharacterName = scanner.nextLine();
+
+                    User watchUser = service.findUserByUsername(watchUsername);
+                    if (watchUser == null) {
+                        System.out.println("Utilizatorul nu exista.");
+                        break;
+                    }
+
+                    Media watchMedia = service.findMediaByExactTitle(watchMediaTitle);
+                    if (watchMedia == null) {
+                        System.out.println("Media nu exista.");
+                        break;
+                    }
+
+                    Episode watchEpisode = null;
+                    if (watchMedia instanceof Series && !watchEpisodeTitle.trim().isEmpty()) {
+                        Series watchSeries = (Series) watchMedia;
+                        for (Episode ep : watchSeries.getEpisodes()) {
+                            if (ep.getTitle().equalsIgnoreCase(watchEpisodeTitle)) {
+                                watchEpisode = ep;
+                                break;
+                            }
+                        }
+
+                        if (watchEpisode == null) {
+                            System.out.println("Episodul nu exista.");
+                            break;
+                        }
+                    }
+
+                    WatchEntry newWatchEntry = new WatchEntry(watchUser, watchMedia, watchEpisode, watchDate);
+                    Comment watchComment = null;
+                    if (!watchCommentText.trim().isEmpty()) {
+                        watchComment = new Comment(watchUser.getUsername(), watchCommentText);
+                    }
+
+                    boolean watchEntryAdded = service.addReviewToWatchEntry(newWatchEntry, watchRating, watchComment);
+                    if (!watchEntryAdded) {
+                        System.out.println("Nu s-a putut crea watch entry-ul.");
+                        break;
+                    }
+
+                    if (!favoriteCharacterName.trim().isEmpty()) {
+                        for (Character character : watchMedia.getCast().values()) {
+                            if (character.getName().equalsIgnoreCase(favoriteCharacterName)) {
+                                newWatchEntry.setFavCharacter(character);
+                                break;
+                            }
+                        }
+                    }
+
+                    service.addWatchEntry(newWatchEntry);
+                    System.out.println("Watch entry adaugat cu succes.");
+                    break;
+
+                case 15:
+                    System.out.print("Introdu titlul productiei: ");
+                    String mediaTitleForComments = scanner.nextLine();
+                    service.showCommentsForMedia(mediaTitleForComments);
+                    break;
+
+                case 16:
+                    System.out.print("Introdu username-ul: ");
+                    String profileUsername = scanner.nextLine();
+                    service.showUserProfile(profileUsername);
+                    break;
+
+                case 17:
                     System.out.println("iesim");
                     break;
 
@@ -334,7 +414,7 @@ public class Main {
                     System.out.println("optiune invalida");
 
             }
-        }while(optiune!=14);
+        }while(optiune!=17);
 
         /*service.showAllUsers();
         service.showAllMedia();
