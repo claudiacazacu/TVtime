@@ -1,48 +1,79 @@
 # TV Time
 
-**TV Time** is a Java application designed to help users keep track of the movies and TV series they watch.
-The app allows users to create their own profile, record what they have watched, rate episodes or movies, leave comments, and choose their favorite characters.
+TV Time is a console-based Java application for managing users, movies, and TV series in a small personal watch-tracking system. The project focuses on object-oriented design and uses text files as seed data.
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Language](https://img.shields.io/badge/language-Java-orange)
 ![OOP](https://img.shields.io/badge/OOP-project-blue)
 
----
+## Overview
 
-## Project Status
+The application loads users, movies, and series from the `data/` folder, stores them in memory, and exposes a CLI menu for browsing and updating the library.
 
-This project is currently under development.
+The current implementation includes:
 
-The goal of this project is to organize and manage personal viewing history while practicing object-oriented programming concepts such as encapsulation, inheritance, and data management.
+- a `Media` hierarchy with `Movie` and `Series`
+- episode support through the `Episode` class
+- user management through the `User` model
+- title search and genre filtering
+- cast storage on each media item
+- review data through `WatchEntry` and `Comment`
+- file-based bootstrap data via `FileService`
 
-## Features
+## Implemented Menu Actions
 
-- [x] Create project README
-- [x] Implement core media hierarchy (Media, Movie, Series, Episode)
-- [x] Implement user profiles
-- [x] Implement service layer for managing application data
-- [ ] Track watched movies and episodes
-- [ ] Add rating system for movies and episodes
-- [ ] Add comments or reviews for media
-- [ ] Select and store favorite characters
-- [ ] Implement personal watchlist
-- [ ] Filter media by genre or rating
-- [ ] Track viewing history
-- [ ] Generate statistics about watched media
+When `Main` runs, the CLI offers these actions:
 
-## Technologies
-
-* Java
-* Object-Oriented Programming principles
-* Java Collections (List, Set, Map)
-* JDBC (planned for database integration)
+1. Show all users
+2. Show all media
+3. Show all genres
+4. Add a user
+5. Add a movie
+6. Add a series
+7. Search media by title
+8. Show only movies
+9. Show only series
+10. Filter media by genre
+11. Show cast for a production
+12. Add an episode to a series
+13. Create a watch entry review with rating and comment
+14. Exit
 
 ## Project Structure
 
-The Java sources are stored under `src/main/java`.
-Duplicate root-level `.java` files were removed so the project uses a single source tree.
+```text
+TVtime/
+|-- data/
+|   |-- movies.txt
+|   |-- series.txt
+|   `-- users.txt
+|-- src/
+|   `-- main/
+|       `-- java/
+|           |-- Main.java
+|           |-- Service.java
+|           |-- FileService.java
+|           |-- Media.java
+|           |-- Movie.java
+|           |-- Series.java
+|           |-- Episode.java
+|           |-- User.java
+|           |-- WatchEntry.java
+|           |-- Comment.java
+|           `-- Character.java
+`-- README.md
+```
+
+## Data Files
+
+The application reads starter records from:
+
+- `data/users.txt`
+- `data/movies.txt`
+- `data/series.txt`
+
+Each file uses comma-separated values and is loaded at startup by `FileService`.
 
 ## Academic Context
 
-This project is developed for the **Object-Oriented Programming 2** course at
-**Faculty of Mathematics and Computer Science - University of Bucharest**.
+PAO - FMI - UNIBUC
