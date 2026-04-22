@@ -17,18 +17,6 @@ public class WatchEntry {
         this.favCharacter = null;
     }
 
-    public void setRating(double rating){
-        this.rating = rating;
-    }
-
-    public void setComment(Comment comment){
-        this.comment = comment;
-    }
-
-    public void setFavCharacter(Character favCharacter){
-        this.favCharacter = favCharacter;
-    }
-
     public User getUser() {
         return user;
     }
@@ -39,6 +27,10 @@ public class WatchEntry {
 
     public Episode getEpisode() {
         return episode;
+    }
+
+    public String getWatchedDate() {
+        return watchedDate;
     }
 
     public double getRating() {
@@ -53,12 +45,44 @@ public class WatchEntry {
         return favCharacter;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setMedia(Media media) {
+        this.media = media;
+    }
+
+    public void setEpisode(Episode episode) {
+        this.episode = episode;
+    }
+
+    public void setWatchedDate(String watchedDate) {
+        this.watchedDate = watchedDate;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public void setFavCharacter(Character favCharacter) {
+        this.favCharacter = favCharacter;
+    }
+
     @Override
     public String toString() {
-        return user.getUsername() + " watched " +
-                media.getTitle() +
-                (episode != null ? " - " + episode.getTitle() : "") +
-                " on " + watchedDate +
-                ", rating: " + rating;
+        return "WatchEntry{" +
+                "user=" + user.getUsername() +
+                ", media=" + media.getTitle() +
+                ", episode=" + (episode != null ? episode.getTitle() : "none") +
+                ", watchedDate='" + watchedDate + '\'' +
+                ", rating=" + rating +
+                ", comment=" + comment +
+                ", favCharacter=" + favCharacter +
+                '}';
     }
 }

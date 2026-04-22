@@ -1,11 +1,9 @@
-public class Movie extends Media
-{
+public class Movie extends Media {
     private String director;
     private String company;
 
     public Movie(String title, String releaseDate, String genre, String description,
-                  String director, String company) {
-
+                 String director, String company) {
         super(title, releaseDate, genre, description);
         this.director = director;
         this.company = company;
@@ -15,14 +13,26 @@ public class Movie extends Media
         return director;
     }
 
+    public String getCompany() {
+        return company;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
-            "title='" + title + '\'' +
-            ", releaseDate='" + releaseDate + '\'' +
-            ", genre='" + genre + '\'' +
-            ", director='" + director + '\'' +
-            ", company='" + company + '\'' +
-            '}';
+                "title='" + title + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", genre='" + genre + '\'' +
+                ", director='" + director + '\'' +
+                ", company='" + company + '\'' +
+                '}';
     }
 }
