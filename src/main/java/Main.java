@@ -14,18 +14,21 @@ public class Main {
         ArrayList<Series> series = fs.readSeries("data/series.txt");
         ArrayList<Movie> movies = fs.readMovies("data/movies.txt");
 
-        Service service = new Service();
+        ServiceData serviceData = new ServiceData();
+        UserService userService = new UserService(serviceData);
+        AdminService adminService = new AdminService(serviceData);
+        Admin admin = new Admin("admin", 30, "admin@tvtime.com");
 
         for (User user: users) {
-            service.addUser(user);
+            userService.addUser(user);
         }
 
         for (Series s : series) {
-            service.addMedia(s);
+            adminService.addMedia(admin, s);
         }
 
         for (Movie m : movies) {
-            service.addMedia(m);
+            adminService.addMedia(admin, m);
         }
 
         /*User user = new User("Ana", 20, "ana@mail.com");
@@ -78,15 +81,15 @@ public class Main {
 
             switch (optiune){
                 case 1:
-                    service.showAllUsers();
+                    userService.showAllUsers();
                     break;
 
                 case 2:
-                    service.showAllMedia();
+                    userService.showAllMedia();
                     break;
 
                 case 3:
-                    service.showAllGenres();
+                    userService.showAllGenres();
                     break;
 
                 case 4:
@@ -101,7 +104,7 @@ public class Main {
                     String email = scanner.nextLine();
 
                     User newUser = new User(username, age, email);
-                    service.addUser(newUser);
+                    userService.addUser(newUser);
 
                     System.out.println("Utilizator adaugat cu succes.");
                     break;
@@ -134,8 +137,11 @@ public class Main {
                             movieCompany
                     );
 
-                    service.addMedia(newMovie);
-                    System.out.println("Filmul a fost adaugat cu succes.");
+                    if (adminService.addMedia(admin, newMovie)) {
+                        System.out.println("Filmul a fost adaugat cu succes.");
+                    } else {
+                        System.out.println("Nu ai permisiunea sa adaugi filmul.");
+                    }
                     break;
 
                 case 6:
@@ -166,15 +172,18 @@ public class Main {
                             seriesCompany
                     );
 
-                    service.addMedia(newSeries);
-                    System.out.println("Serialul a fost adaugat cu succes.");
+                    if (adminService.addMedia(admin, newSeries)) {
+                        System.out.println("Serialul a fost adaugat cu succes.");
+                    } else {
+                        System.out.println("Nu ai permisiunea sa adaugi serialul.");
+                    }
                     break;
 
                 case 7:
                     System.out.print("Introdu titlul cautat: ");
                     String titleQuery = scanner.nextLine();
 
-                    List<Media> rezultate = service.searchMediaByTitle(titleQuery);
+                    List<Media> rezultate = userService.searchMediaByTitle(titleQuery);
 
                     if (rezultate.isEmpty()) {
                         System.out.println("Nu s-a gasit nicio productie.");
@@ -187,18 +196,18 @@ public class Main {
                     break;
 
                 case 8:
-                    service.showMovies();
+                    userService.showMovies();
                     break;
 
                 case 9:
-                    service.showSeries();
+                    userService.showSeries();
                     break;
 
                 case 10:
                     System.out.print("Introdu genul dorit: ");
                     String genreQuery = scanner.nextLine();
 
-                    List<Media> mediaFiltrata = service.filterMediaByGenre(genreQuery);
+                    List<Media> mediaFiltrata = userService.filterMediaByGenre(genreQuery);
 
                     if (mediaFiltrata.isEmpty()) {
                         System.out.println("Nu exista productii pentru genul introdus.");
@@ -213,7 +222,7 @@ public class Main {
                 case 11:
                     System.out.print("Introdu titlul productiei: ");
                     String mediaTitleForCast = scanner.nextLine();
-                    service.showCastForMedia(mediaTitleForCast);
+                    userService.showCastForMedia(mediaTitleForCast);
                     break;
 
                 case 12:
@@ -244,7 +253,7 @@ public class Main {
                             duration
                     );
 
-                    boolean addedEpisode = service.addEpisodeToSeries(targetSeries, episode);
+                    boolean addedEpisode = adminService.addEpisode(admin, targetSeries, episode);
 
                     if (addedEpisode) {
                         System.out.println("Episod adaugat cu succes.");
@@ -278,18 +287,12 @@ public class Main {
                     System.out.print("Text comentariu: ");
                     String commentText = scanner.nextLine();
 
-                    User foundUser = service.findUserByUsername(reviewUsername);
-                    Media foundMedia = service.findMediaByExactTitle(reviewMediaTitle);
+                    User foundUser = userService.findUserByUsername(reviewUsername);
+                    Media foundMedia = userService.findMediaByExactTitle(reviewMediaTitle);
 
                     Episode foundEpisode = null;
                     if (foundMedia instanceof Series && !reviewEpisodeTitle.trim().isEmpty()) {
-                        Series foundSeries = (Series) foundMedia;
-                        for (Episode ep : foundSeries.getEpisodes()) {
-                            if (ep.getTitle().equalsIgnoreCase(reviewEpisodeTitle)) {
-                                foundEpisode = ep;
-                                break;
-                            }
-                        }
+                        foundEpisode = userService.findEpisodeByTitle((Series) foundMedia, reviewEpisodeTitle);
                     }
 
                     if (foundUser == null) {
@@ -305,10 +308,13 @@ public class Main {
                     WatchEntry watchEntry = new WatchEntry(foundUser, foundMedia, foundEpisode, watchedDate);
                     Comment comment = new Comment(commentAuthor, commentText);
 
-                    boolean reviewAdded = service.addReviewToWatchEntry(watchEntry, rating, comment);
+                    boolean reviewAdded = userService.addRating(watchEntry, rating);
+                    if (reviewAdded) {
+                        reviewAdded = userService.addComment(watchEntry, comment);
+                    }
 
                     if (reviewAdded) {
-                        service.addWatchEntry(watchEntry);
+                        userService.addWatchEntry(watchEntry);
                         System.out.println("Review adaugat cu succes:");
                         System.out.println(watchEntry);
                     } else {
@@ -341,13 +347,13 @@ public class Main {
                     System.out.print("Personaj favorit (sau lasa gol): ");
                     String favoriteCharacterName = scanner.nextLine();
 
-                    User watchUser = service.findUserByUsername(watchUsername);
+                    User watchUser = userService.findUserByUsername(watchUsername);
                     if (watchUser == null) {
                         System.out.println("Utilizatorul nu exista.");
                         break;
                     }
 
-                    Media watchMedia = service.findMediaByExactTitle(watchMediaTitle);
+                    Media watchMedia = userService.findMediaByExactTitle(watchMediaTitle);
                     if (watchMedia == null) {
                         System.out.println("Media nu exista.");
                         break;
@@ -355,13 +361,7 @@ public class Main {
 
                     Episode watchEpisode = null;
                     if (watchMedia instanceof Series && !watchEpisodeTitle.trim().isEmpty()) {
-                        Series watchSeries = (Series) watchMedia;
-                        for (Episode ep : watchSeries.getEpisodes()) {
-                            if (ep.getTitle().equalsIgnoreCase(watchEpisodeTitle)) {
-                                watchEpisode = ep;
-                                break;
-                            }
-                        }
+                        watchEpisode = userService.findEpisodeByTitle((Series) watchMedia, watchEpisodeTitle);
 
                         if (watchEpisode == null) {
                             System.out.println("Episodul nu exista.");
@@ -375,10 +375,14 @@ public class Main {
                         watchComment = new Comment(watchUser.getUsername(), watchCommentText);
                     }
 
-                    boolean watchEntryAdded = service.addReviewToWatchEntry(newWatchEntry, watchRating, watchComment);
+                    boolean watchEntryAdded = userService.addRating(newWatchEntry, watchRating);
                     if (!watchEntryAdded) {
                         System.out.println("Nu s-a putut crea watch entry-ul.");
                         break;
+                    }
+
+                    if (watchComment != null) {
+                        userService.addComment(newWatchEntry, watchComment);
                     }
 
                     if (!favoriteCharacterName.trim().isEmpty()) {
@@ -390,20 +394,20 @@ public class Main {
                         }
                     }
 
-                    service.addWatchEntry(newWatchEntry);
+                    userService.addWatchEntry(newWatchEntry);
                     System.out.println("Watch entry adaugat cu succes.");
                     break;
 
                 case 15:
                     System.out.print("Introdu titlul productiei: ");
                     String mediaTitleForComments = scanner.nextLine();
-                    service.showCommentsForMedia(mediaTitleForComments);
+                    userService.showCommentsForMedia(mediaTitleForComments);
                     break;
 
                 case 16:
                     System.out.print("Introdu username-ul: ");
                     String profileUsername = scanner.nextLine();
-                    service.showUserProfile(profileUsername);
+                    userService.showUserProfile(profileUsername);
                     break;
 
                 case 17:

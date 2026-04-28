@@ -33,6 +33,10 @@ public class User {
         this.email = email;
     }
 
+    public boolean isAdmin() {
+        return false;
+    }
+
     @Override
     public String toString() {
         return "User{" +
