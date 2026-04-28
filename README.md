@@ -1,6 +1,6 @@
 # TV Time
 
-TV Time is a console-based Java application for managing users, movies, and TV series in a small personal watch-tracking system. The project focuses on object-oriented design and uses text files as seed data.
+TV Time is a console-based Java application for managing users, movies, series, reviews, and watch history in a small personal watch-tracking system. The project focuses on object-oriented design and uses text files as seed data.
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Language](https://img.shields.io/badge/language-Java-orange)
@@ -15,10 +15,33 @@ The current implementation includes:
 - a `Media` hierarchy with `Movie` and `Series`
 - episode support through the `Episode` class
 - user management through the `User` model
+- admin support through `Admin extends User`
+- service separation through `UserService` and `AdminService`
 - title search and genre filtering
 - cast storage on each media item
 - review data through `WatchEntry` and `Comment`
+- watch history and profile display
+- admin post support through `Post`
 - file-based bootstrap data via `FileService`
+
+## Most recent updates
+
+The project now separates behavior by role:
+
+- `UserService` contains functionality available to any user:
+  - `addComment()`
+  - `addRating()`
+  - `showWatchHistory()`
+  - `filterCommentsByRating()`
+  - user/profile/media browsing helpers
+- `AdminService` extends `UserService` and contains admin-only operations:
+  - `addMedia()`
+  - `deleteMedia()`
+  - `addEpisode()`
+  - `deleteUser()`
+  - `createPost()`
+
+Both services work on the same in-memory state through `ServiceData`.
 
 ## Implemented Menu Actions
 
@@ -37,7 +60,11 @@ When `Main` runs, the CLI offers these actions:
 11. Show cast for a production
 12. Add an episode to a series
 13. Create a watch entry review with rating and comment
-14. Exit
+14. Create a watch entry
+15. Show comments for a production
+16. Show user profile
+17. Exit
+
 
 ## Project Structure
 
@@ -50,8 +77,12 @@ TVtime/
 |-- src/
 |   `-- main/
 |       `-- java/
+|           |-- Admin.java
+|           |-- AdminService.java
+|           |-- ServiceData.java
+|           |-- UserService.java
+|           |-- Post.java
 |           |-- Main.java
-|           |-- Service.java
 |           |-- FileService.java
 |           |-- Media.java
 |           |-- Movie.java
@@ -73,6 +104,7 @@ The application reads starter records from:
 - `data/series.txt`
 
 Each file uses comma-separated values and is loaded at startup by `FileService`.
+
 
 ## Academic Context
 
