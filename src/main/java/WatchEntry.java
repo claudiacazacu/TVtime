@@ -1,13 +1,15 @@
+import java.time.LocalDate;
+
 public class WatchEntry {
     private User user;
     private Media media;
     private Episode episode;
-    private String watchedDate;
+    private LocalDate watchedDate;
     private double rating;
     private Comment comment;
     private Character favCharacter;
 
-    public WatchEntry(User user, Media media, Episode episode, String watchedDate) {
+    public WatchEntry(User user, Media media, Episode episode, LocalDate watchedDate) {
         this.user = user;
         this.media = media;
         this.episode = episode;
@@ -29,7 +31,7 @@ public class WatchEntry {
         return episode;
     }
 
-    public String getWatchedDate() {
+    public LocalDate getWatchedDate() {
         return watchedDate;
     }
 
@@ -57,7 +59,7 @@ public class WatchEntry {
         this.episode = episode;
     }
 
-    public void setWatchedDate(String watchedDate) {
+    public void setWatchedDate(LocalDate watchedDate) {
         this.watchedDate = watchedDate;
     }
 

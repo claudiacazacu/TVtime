@@ -1,8 +1,10 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.HashMap;
 
 public class UserService {
     protected final ServiceData data;
@@ -299,4 +301,100 @@ public class UserService {
                 .forEach(System.out::println);
 
     }
-}
+
+    //popularity index = numarul de vizionari ale unei media specifice/nr vizionari per total
+
+    public int totalWatchesWeek(List<WatchEntry> entries){
+        LocalDate today = LocalDate.now();
+        LocalDate lastWeek = today.minusDays(7);
+        int count=0;
+        for (WatchEntry entry : entries ){
+            LocalDate date = entry.getWatchedDate();
+
+            if(!date.isBefore(lastWeek) && !date.isAfter(today)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int specificWatchesWeek(List<WatchEntry> entries, String mediaTitle){
+         LocalDate today = LocalDate.now();
+         LocalDate lastWeek = today.minusDays(7);
+        int count =0;
+        for (WatchEntry entry : entries){
+            LocalDate date = entry.getWatchedDate();
+            boolean isLastWeek = !date.isBefore(lastWeek)&& !date.isAfter(today);
+            boolean isSameMedia = entry.getMedia().getTitle().equalsIgnoreCase(mediaTitle);
+            if(isLastWeek&&isSameMedia) { count++; }
+        }
+        return count;
+        }
+
+    public double getPopularityScore(List<WatchEntry> entries, String mediaTitle, double rating){
+        int totalWatches = totalWatchesWeek(entries);
+        int mediaWatches = specificWatchesWeek(entries, mediaTitle);
+        if(totalWatches==0) { return 0.0; }
+        double popularityIndex=(double) mediaWatches/totalWatches;
+        return popularityIndex*rating;
+        }
+
+    public double overallRating4Media(List<WatchEntry> entries, String mediaTitle){
+        double sum=0.0;
+        int count=0;
+
+        for(WatchEntry entry : entries){
+            if(entry.getMedia().getTitle().equalsIgnoreCase(mediaTitle) && entry.getRating()>0.0) {
+                sum += entry.getRating();
+                ;
+                count++;
+            }
+        }
+        if(count==0) return 0.0;
+        return sum/count;
+    }
+
+    public void topWeek(List<WatchEntry> entries){
+        Map<Media,Double> scores=new HashMap<>();
+
+            for(Media media : data.getMediaLibrary()){
+                String mediaTitle=media.getTitle();
+                double overallSc=overallRating4Media(entries,mediaTitle);
+                double popularitySc=getPopularityScore(entries, mediaTitle, overallSc);
+                if(popularitySc>0.0) {scores.put(media,popularitySc); }
+            }
+        List<Map.Entry<Media,Double>> sortedScs = new ArrayList<>(scores.entrySet());
+        sortedScs.sort(Map.Entry.<Media,Double>comparingByValue().reversed());
+        System.out.println("Topul saptamanii : ");
+        if(sortedScs.isEmpty()) { System.out.println("Nu exista vizionari"); return; }
+        for(Map.Entry<Media,Double> entry : sortedScs) { System.out.println(entry.getKey().getTitle() + "- score: "+entry.getValue()); }
+            //sortare and stuff
+        }
+
+        //if (media.getTitle().equalsIgnoreCase(normalizedTitle)) {
+        //                return media;
+        //            }
+
+        //for (Media media : data.getMediaLibrary()) {
+        //            System.out.println(media.getTitle());
+        //        }
+
+    public int totalWatchesMonth(List<WatchEntry> entries){
+         LocalDate today = LocalDate.now();
+         LocalDate lastMonth = today.minusMonths(1);
+         int count= 0;
+         for(WatchEntry entry : entries){
+             LocalDate date = entry.getWatchedDate();
+             if(!date.isBefore(lastMonth)&& !date.isAfter(today)){
+                 count++;
+             }
+         }
+         return count;
+        }
+        /*
+        * pentru un media anume, voi lua rating urile din ultima saptamana deci LocalDate/Sysdate-RatingDate>=7
+        * sa spunem ca are 70 rating uri si media ar fi 8.9
+        *
+        * */
+        //double popularityScore=
+    }

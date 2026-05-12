@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDate;
 
 public class Main {
 
@@ -56,7 +57,7 @@ public class Main {
         service.addMedia(movie);*/
 
         int optiune;
-        do{
+        do {
             System.out.println("\n--- TV Time ---");
             System.out.println("1 - Afisare utilizatori");
             System.out.println("2 - Afisare media");
@@ -79,7 +80,7 @@ public class Main {
             optiune = scanner.nextInt();
             scanner.nextLine();
 
-            switch (optiune){
+            switch (optiune) {
                 case 1:
                     userService.showAllUsers();
                     break;
@@ -305,7 +306,7 @@ public class Main {
                         break;
                     }
 
-                    WatchEntry watchEntry = new WatchEntry(foundUser, foundMedia, foundEpisode, watchedDate);
+                    WatchEntry watchEntry = new WatchEntry(foundUser, foundMedia, foundEpisode, LocalDate.now());
                     Comment comment = new Comment(commentAuthor, commentText);
 
                     boolean reviewAdded = userService.addRating(watchEntry, rating);
@@ -369,7 +370,7 @@ public class Main {
                         }
                     }
 
-                    WatchEntry newWatchEntry = new WatchEntry(watchUser, watchMedia, watchEpisode, watchDate);
+                    WatchEntry newWatchEntry = new WatchEntry(watchUser, watchMedia, watchEpisode, LocalDate.now());
                     Comment watchComment = null;
                     if (!watchCommentText.trim().isEmpty()) {
                         watchComment = new Comment(watchUser.getUsername(), watchCommentText);
