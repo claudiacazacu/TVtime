@@ -290,4 +290,13 @@ public class UserService {
 
         return null;
     }
+
+    public void showCommentsByDescRating(Media media) {
+        data.getWatchEntries().stream()
+                .filter(entry -> entry.getMedia().equals(media))
+                .filter(entry -> entry.getComment() != null)
+                .sorted(Comparator.comparing(WatchEntry::getRating).reversed())
+                .forEach(System.out::println);
+
+    }
 }
