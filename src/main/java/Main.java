@@ -75,7 +75,9 @@ public class Main {
             System.out.println("14 - Creare watch entry");
             System.out.println("15 - Afiseaza comentarii pentru o productie");
             System.out.println("16 - Afiseaza profil utilizator");
-            System.out.println("17 - Iesire");
+            System.out.println("17 - Top saptamana (cele mai populare titluri)");
+            System.out.println("18 - Recomandari personalizate pentru un utilizator");
+            System.out.println("19 - Iesire");
             System.out.print("\nOptiunea aleasa este ... ");
             optiune = scanner.nextInt();
             scanner.nextLine();
@@ -412,6 +414,19 @@ public class Main {
                     break;
 
                 case 17:
+                    userService.topWeek(userService.data.getWatchEntries());
+                    break;
+
+                case 18:
+                    System.out.print("Username pentru recomandari: ");
+                    String recUsername = scanner.nextLine();
+                    System.out.print("Cate recomandari doresti? ");
+                    int recCount = scanner.nextInt();
+                    scanner.nextLine();
+                    userService.showRecommendationsForUser(recUsername, recCount);
+                    break;
+
+                case 19:
                     System.out.println("iesim");
                     break;
 
@@ -419,7 +434,7 @@ public class Main {
                     System.out.println("optiune invalida");
 
             }
-        }while(optiune!=17);
+        }while(optiune!=19);
 
         /*service.showAllUsers();
         service.showAllMedia();

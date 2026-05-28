@@ -1,10 +1,13 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserService {
     protected final ServiceData data;
@@ -397,4 +400,79 @@ public class UserService {
         *
         * */
         //double popularityScore=
+
+    public List<Media> getRecommendationsForUser(String username, int topN) {
+        User user = findUserByUsername(username);
+        if (user == null) return new ArrayList<>();
+
+        Set<String> watchedTitles = new HashSet<>();
+        Map<String, List<Double>> genreRatings = new HashMap<>();
+
+        for (WatchEntry entry : data.getWatchEntries()) {
+            if (entry.getUser().getUsername().equalsIgnoreCase(username)) {
+                watchedTitles.add(entry.getMedia().getTitle().toLowerCase(Locale.ROOT));
+                if (entry.getRating() > 0.0) {
+                    String genre = entry.getMedia().getGenre();
+                    genreRatings.computeIfAbsent(genre, k -> new ArrayList<>()).add(entry.getRating());
+                }
+            }
+        }
+
+        Map<String, Double> genrePreference = new HashMap<>();
+        for (Map.Entry<String, List<Double>> e : genreRatings.entrySet()) {
+            double avg = e.getValue().stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+            genrePreference.put(e.getKey(), avg);
+        }
+
+        Map<Media, Double> scores = new HashMap<>();
+        for (Media media : data.getMediaLibrary()) {
+            if (watchedTitles.contains(media.getTitle().toLowerCase(Locale.ROOT))) continue;
+
+            double genreScore = genrePreference.getOrDefault(media.getGenre(), 5.0);
+
+            double communityRating = overallRating4Media(data.getWatchEntries(), media.getTitle());
+            if (communityRating == 0.0) communityRating = 5.0;
+
+            double popScore = getPopularityScore(data.getWatchEntries(), media.getTitle(), 10.0);
+
+            double finalScore = (genreScore * 0.4) + (communityRating * 0.4) + (popScore * 0.2);
+            scores.put(media, finalScore);
+        }
+
+        return scores.entrySet().stream()
+                .sorted(Map.Entry.<Media, Double>comparingByValue().reversed())
+                .limit(topN)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
+
+    public void showRecommendationsForUser(String username, int topN) {
+        User user = findUserByUsername(username);
+        if (user == null) {
+            System.out.println("Utilizatorul nu exista.");
+            return;
+        }
+
+        List<Media> recommendations = getRecommendationsForUser(username, topN);
+
+        if (recommendations.isEmpty()) {
+            System.out.println("Nu exista recomandari disponibile.");
+            return;
+        }
+
+        System.out.println("\nRecomandari personalizate pentru " + username + ":");
+        System.out.println("(bazate pe preferintele tale de gen + ratingul comunitatii + popularitate)");
+
+        int index = 1;
+        for (Media media : recommendations) {
+            double communityRating = overallRating4Media(data.getWatchEntries(), media.getTitle());
+            String type = (media instanceof Movie) ? "Film" : "Serial";
+            String ratingInfo = communityRating > 0.0
+                    ? String.format("Rating comunitate: %.1f/10", communityRating)
+                    : "Fara rating inca";
+
+            System.out.printf("%d. [%s] %s (%s) - %s%n",
+                    index++, type, media.getTitle(), media.getGenre(), ratingInfo);
+        }
+    }
+}
