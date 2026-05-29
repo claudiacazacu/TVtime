@@ -63,7 +63,9 @@ When `Main` runs, the CLI offers these actions:
 14. Create a watch entry
 15. Show comments for a production
 16. Show user profile
-17. Exit
+17. Weekly top
+18. Personalized recommendations 
+19. Exit
 
 
 ## Project Structure
