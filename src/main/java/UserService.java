@@ -29,6 +29,8 @@ public class UserService {
     public void addWatchEntry(WatchEntry watchEntry) {
         if (watchEntry != null) {
             data.getWatchEntries().add(watchEntry);
+            // Auto-remove din watchlist cand utilizatorul marcheaza ca a vazut titlul
+            watchEntry.getUser().removeFromWatchlist(watchEntry.getMedia());
         }
     }
 
@@ -444,6 +446,50 @@ public class UserService {
                 .limit(topN)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
+    }
+
+    // ===== WATCHLIST =====
+
+    public boolean addToWatchlist(String username, String mediaTitle) {
+        User user = findUserByUsername(username);
+        Media media = findMediaByExactTitle(mediaTitle);
+        if (user == null || media == null) return false;
+        if (user.isInWatchlist(media)) {
+            System.out.println("Titlul este deja in watchlist.");
+            return false;
+        }
+        return user.addToWatchlist(media);
+    }
+
+    public boolean removeFromWatchlist(String username, String mediaTitle) {
+        User user = findUserByUsername(username);
+        Media media = findMediaByExactTitle(mediaTitle);
+        if (user == null || media == null) return false;
+        return user.removeFromWatchlist(media);
+    }
+
+    public void showWatchlist(String username) {
+        User user = findUserByUsername(username);
+        if (user == null) {
+            System.out.println("Utilizatorul nu exista.");
+            return;
+        }
+        if (user.getWatchlist().isEmpty()) {
+            System.out.println("Watchlist-ul lui " + username + " este gol.");
+            return;
+        }
+        System.out.println("\nWatchlist " + username + ":");
+        user.getWatchlist().stream()
+                .sorted(Comparator.comparing(Media::getTitle))
+                .forEach(m -> {
+                    String type = (m instanceof Movie) ? "Film" : "Serial";
+                    double rating = overallRating4Media(data.getWatchEntries(), m.getTitle());
+                    String ratingStr = rating > 0.0
+                            ? String.format("%.1f/10", rating)
+                            : "fara rating";
+                    System.out.printf("  [%s] %s (%s) - Comunitate: %s%n",
+                            type, m.getTitle(), m.getGenre(), ratingStr);
+                });
     }
 
     public void showRecommendationsForUser(String username, int topN) {

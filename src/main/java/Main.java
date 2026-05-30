@@ -77,7 +77,10 @@ public class Main {
             System.out.println("16 - Afiseaza profil utilizator");
             System.out.println("17 - Top saptamana (cele mai populare titluri)");
             System.out.println("18 - Recomandari personalizate pentru un utilizator");
-            System.out.println("19 - Iesire");
+            System.out.println("19 - Adauga la watchlist");
+            System.out.println("20 - Afiseaza watchlist utilizator");
+            System.out.println("21 - Sterge din watchlist");
+            System.out.println("22 - Iesire");
             System.out.print("\nOptiunea aleasa este ... ");
             optiune = scanner.nextInt();
             scanner.nextLine();
@@ -427,6 +430,36 @@ public class Main {
                     break;
 
                 case 19:
+                    System.out.print("Username: ");
+                    String wlAddUser = scanner.nextLine();
+                    System.out.print("Titlu media: ");
+                    String wlAddTitle = scanner.nextLine();
+                    if (userService.addToWatchlist(wlAddUser, wlAddTitle)) {
+                        System.out.println("Adaugat in watchlist cu succes.");
+                    } else {
+                        System.out.println("Nu s-a putut adauga. Verifica username-ul si titlul.");
+                    }
+                    break;
+
+                case 20:
+                    System.out.print("Username: ");
+                    String wlShowUser = scanner.nextLine();
+                    userService.showWatchlist(wlShowUser);
+                    break;
+
+                case 21:
+                    System.out.print("Username: ");
+                    String wlRemUser = scanner.nextLine();
+                    System.out.print("Titlu media: ");
+                    String wlRemTitle = scanner.nextLine();
+                    if (userService.removeFromWatchlist(wlRemUser, wlRemTitle)) {
+                        System.out.println("Titlul a fost sters din watchlist.");
+                    } else {
+                        System.out.println("Nu s-a putut sterge. Verifica username-ul si titlul.");
+                    }
+                    break;
+
+                case 22:
                     System.out.println("iesim");
                     break;
 
@@ -434,7 +467,7 @@ public class Main {
                     System.out.println("optiune invalida");
 
             }
-        }while(optiune!=19);
+        }while(optiune!=22);
 
         /*service.showAllUsers();
         service.showAllMedia();
