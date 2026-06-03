@@ -108,8 +108,7 @@ public class MediaRepository implements Repository<Media> {
                 ps.setString(5, ((Series) media).getDirector());
                 ps.setString(6, ((Series) media).getCompany());
             }
-            // id-ul trebuie setat separat; pentru simplitate cautam dupa titlu
-            ps.setString(7, media.getTitle()); // workaround - ideal ai id pe obiect
+            ps.setString(7, media.getTitle());
             ps.executeUpdate();
         }
     }

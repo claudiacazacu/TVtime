@@ -20,7 +20,6 @@ public class WatchEntryRepository implements Repository<WatchEntry> {
         return DatabaseConnection.getInstance().getConnection();
     }
 
-    // Returneaza id-ul generat dupa insert
     public int create(WatchEntry we, int mediaId, Integer episodeId, Integer favCharacterId) throws SQLException {
         String sql = "INSERT INTO watch_entries " +
                      "(username, media_id, episode_id, watched_date, rating, comment_author, comment_text, fav_character_id) " +
@@ -126,8 +125,6 @@ public class WatchEntryRepository implements Repository<WatchEntry> {
                 ? new Admin(rs.getString("username"), rs.getInt("age"), rs.getString("email"))
                 : new User(rs.getString("username"), rs.getInt("age"), rs.getString("email"));
 
-        // Media si Episode sunt placeholder - pentru a le popula complet
-        // ai nevoie de MediaRepository/EpisodeRepository, dar pastram simplu
         Media media = new Movie("id=" + rs.getInt("media_id"), "", "", "", "", "");
 
         Date watchedDate = rs.getDate("watched_date");

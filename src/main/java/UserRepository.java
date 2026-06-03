@@ -31,7 +31,6 @@ public class UserRepository implements Repository<User> {
         }
     }
 
-    // findById nu e aplicabil pentru User (PK e username), returnam dupa username
     @Override
     public User findById(int id) throws SQLException {
         throw new UnsupportedOperationException("Foloseste findByUsername pentru User.");

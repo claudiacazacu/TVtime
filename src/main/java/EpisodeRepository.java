@@ -79,7 +79,6 @@ public class EpisodeRepository implements Repository<Episode> {
 
     @Override
     public void update(Episode episode) throws SQLException {
-        // Necesita id-ul episodului - update dupa id
         throw new UnsupportedOperationException("Foloseste updateById(id, episode).");
     }
 
