@@ -25,6 +25,8 @@ public class Main {
         ArrayList<Series> series = fs.readSeries("data/series.txt");
         ArrayList<Movie> movies = fs.readMovies("data/movies.txt");
 
+        AuditService audit = AuditService.getInstance();
+
         ServiceData serviceData = new ServiceData();
         UserService userService = new UserService(serviceData);
         AdminService adminService = new AdminService(serviceData);
@@ -97,18 +99,22 @@ public class Main {
 
             switch (optiune) {
                 case 1:
+                    audit.log("afisare_utilizatori");
                     userService.showAllUsers();
                     break;
 
                 case 2:
+                    audit.log("afisare_media");
                     userService.showAllMedia();
                     break;
 
                 case 3:
+                    audit.log("afisare_genuri");
                     userService.showAllGenres();
                     break;
 
                 case 4:
+                    audit.log("adauga_utilizator");
                     System.out.print("Username: ");
                     String username = scanner.nextLine();
 
@@ -126,6 +132,7 @@ public class Main {
                     break;
 
                 case 5:
+                    audit.log("adauga_film");
                     System.out.print("Titlu film: ");
                     String movieTitle = scanner.nextLine();
 
@@ -161,6 +168,7 @@ public class Main {
                     break;
 
                 case 6:
+                    audit.log("adauga_serial");
                     System.out.print("Titlu serial: ");
                     String seriesTitle = scanner.nextLine();
 
@@ -196,6 +204,7 @@ public class Main {
                     break;
 
                 case 7:
+                    audit.log("cauta_media_dupa_titlu");
                     System.out.print("Introdu titlul cautat: ");
                     String titleQuery = scanner.nextLine();
 
@@ -212,14 +221,17 @@ public class Main {
                     break;
 
                 case 8:
+                    audit.log("afisare_filme");
                     userService.showMovies();
                     break;
 
                 case 9:
+                    audit.log("afisare_seriale");
                     userService.showSeries();
                     break;
 
                 case 10:
+                    audit.log("filtrare_media_dupa_gen");
                     System.out.print("Introdu genul dorit: ");
                     String genreQuery = scanner.nextLine();
 
@@ -236,12 +248,14 @@ public class Main {
                     break;
 
                 case 11:
+                    audit.log("afisare_cast");
                     System.out.print("Introdu titlul productiei: ");
                     String mediaTitleForCast = scanner.nextLine();
                     userService.showCastForMedia(mediaTitleForCast);
                     break;
 
                 case 12:
+                    audit.log("adauga_episod");
                     System.out.print("Titlul serialului: ");
                     String targetSeries = scanner.nextLine();
 
@@ -279,6 +293,7 @@ public class Main {
                     break;
 
                 case 13:
+                    audit.log("adauga_rating_comment");
                     System.out.println("Creare watch entry pentru review.");
 
                     System.out.print("Username: ");
@@ -339,6 +354,7 @@ public class Main {
                     break;
 
                 case 14:
+                    audit.log("creare_watch_entry");
                     System.out.println("Creare watch entry.");
 
                     System.out.print("Username: ");
@@ -415,22 +431,26 @@ public class Main {
                     break;
 
                 case 15:
+                    audit.log("afisare_comentarii");
                     System.out.print("Introdu titlul productiei: ");
                     String mediaTitleForComments = scanner.nextLine();
                     userService.showCommentsForMedia(mediaTitleForComments);
                     break;
 
                 case 16:
+                    audit.log("afisare_profil_utilizator");
                     System.out.print("Introdu username-ul: ");
                     String profileUsername = scanner.nextLine();
                     userService.showUserProfile(profileUsername);
                     break;
 
                 case 17:
+                    audit.log("top_saptamana");
                     userService.topWeek(userService.data.getWatchEntries());
                     break;
 
                 case 18:
+                    audit.log("recomandari_personalizate");
                     System.out.print("Username pentru recomandari: ");
                     String recUsername = scanner.nextLine();
                     System.out.print("Cate recomandari doresti? ");
@@ -440,6 +460,7 @@ public class Main {
                     break;
 
                 case 19:
+                    audit.log("adauga_in_watchlist");
                     System.out.print("Username: ");
                     String wlAddUser = scanner.nextLine();
                     System.out.print("Titlu media: ");
@@ -452,12 +473,14 @@ public class Main {
                     break;
 
                 case 20:
+                    audit.log("afisare_watchlist");
                     System.out.print("Username: ");
                     String wlShowUser = scanner.nextLine();
                     userService.showWatchlist(wlShowUser);
                     break;
 
                 case 21:
+                    audit.log("sterge_din_watchlist");
                     System.out.print("Username: ");
                     String wlRemUser = scanner.nextLine();
                     System.out.print("Titlu media: ");
