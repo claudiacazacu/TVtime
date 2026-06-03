@@ -8,7 +8,7 @@ TV Time is a console-based Java application for managing users, movies, series, 
 
 ## Overview
 
-The application loads users, movies, and series from the `data/` folder, stores them in memory, and exposes a CLI menu for browsing and updating the library.
+The application loads users, movies, and series from the `data/` folder, connects to a PostgreSQL database, and exposes a CLI menu for browsing and updating the library.
 
 The current implementation includes:
 
@@ -20,26 +20,28 @@ The current implementation includes:
 - title search and genre filtering
 - cast storage on each media item
 - review data through `WatchEntry` and `Comment`
-- watch history and profile display
+- watch history, profile display, and watchlist management
 - admin post support through `Post`
 - file-based bootstrap data via `FileService`
+- PostgreSQL persistence via a `Repository<T>` interface and concrete implementations
+- audit logging to `data/audit.csv` via `AuditService` (Singleton)
 
 ## Most recent updates
 
-The project now separates behavior by role:
+**Database integration:** the project now connects to a local PostgreSQL database (`TvTime`) at startup using a `DatabaseConnection` Singleton. CRUD operations for users, media, episodes, and watch entries are exposed through a generic `Repository<T>` interface with concrete implementations (`UserRepository`, `MediaRepository`, `EpisodeRepository`, `WatchEntryRepository`), each using the Singleton connection.
+
+**Audit service:** every menu action is logged with a timestamp to `data/audit.csv` by `AuditService` (Singleton). The CSV is created automatically on first run with a `nume_actiune,timestamp` header.
+
+**Watchlist:** users can now add, view, and remove titles from a personal watchlist (menu options 19–21).
+
+The service layer remains role-separated:
 
 - `UserService` contains functionality available to any user:
-  - `addComment()`
-  - `addRating()`
-  - `showWatchHistory()`
-  - `filterCommentsByRating()`
+  - `addComment()`, `addRating()`, `showWatchHistory()`, `filterCommentsByRating()`
+  - watchlist operations: `addToWatchlist()`, `showWatchlist()`, `removeFromWatchlist()`
   - user/profile/media browsing helpers
 - `AdminService` extends `UserService` and contains admin-only operations:
-  - `addMedia()`
-  - `deleteMedia()`
-  - `addEpisode()`
-  - `deleteUser()`
-  - `createPost()`
+  - `addMedia()`, `deleteMedia()`, `addEpisode()`, `deleteUser()`, `createPost()`
 
 Both services work on the same in-memory state through `ServiceData`.
 
@@ -64,8 +66,11 @@ When `Main` runs, the CLI offers these actions:
 15. Show comments for a production
 16. Show user profile
 17. Weekly top
-18. Personalized recommendations 
-19. Exit
+18. Personalized recommendations
+19. Add to watchlist
+20. Show user watchlist
+21. Remove from watchlist
+22. Exit
 
 
 ## Project Structure
@@ -81,19 +86,26 @@ TVtime/
 |       `-- java/
 |           |-- Admin.java
 |           |-- AdminService.java
-|           |-- ServiceData.java
-|           |-- UserService.java
-|           |-- Post.java
-|           |-- Main.java
-|           |-- FileService.java
-|           |-- Media.java
-|           |-- Movie.java
-|           |-- Series.java
-|           |-- Episode.java
-|           |-- User.java
-|           |-- WatchEntry.java
+|           |-- AuditService.java
+|           |-- Character.java
 |           |-- Comment.java
-|           `-- Character.java
+|           |-- DatabaseConnection.java
+|           |-- Episode.java
+|           |-- EpisodeRepository.java
+|           |-- FileService.java
+|           |-- Main.java
+|           |-- Media.java
+|           |-- MediaRepository.java
+|           |-- Movie.java
+|           |-- Post.java
+|           |-- Repository.java
+|           |-- Series.java
+|           |-- ServiceData.java
+|           |-- User.java
+|           |-- UserRepository.java
+|           |-- UserService.java
+|           |-- WatchEntry.java
+|           `-- WatchEntryRepository.java
 `-- README.md
 ```
 
@@ -105,7 +117,7 @@ The application reads starter records from:
 - `data/movies.txt`
 - `data/series.txt`
 
-Each file uses comma-separated values and is loaded at startup by `FileService`.
+Each file uses comma-separated values and is loaded at startup by `FileService`. All subsequent write operations go to the PostgreSQL database. Audit logs are written to `data/audit.csv`.
 
 
 ## Academic Context
