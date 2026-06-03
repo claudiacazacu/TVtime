@@ -2,10 +2,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.time.LocalDate;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Main {
 
     public static void main(String[] args) {
+        // Test conexiune PostgreSQL
+        try {
+            Connection conn = DatabaseConnection.getInstance().getConnection();
+            System.out.println("Conectat la PostgreSQL: " + !conn.isClosed());
+        } catch (SQLException e) {
+            System.out.println("Eroare conexiune BD: " + e.getMessage());
+        }
+
         FileService fs = new FileService();
         Scanner scanner = new Scanner(System.in);
         /*fs.readUsers("data/users.txt");
