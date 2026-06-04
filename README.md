@@ -45,6 +45,50 @@ The service layer remains role-separated:
 
 Both services work on the same in-memory state through `ServiceData`.
 
+## Tipuri de obiecte
+
+| Nr. | Tip | Descriere |
+|-----|-----|-----------|
+| 1 | `Media` | Clasă abstractă de bază pentru orice conținut media |
+| 2 | `Movie` | Film, extinde `Media` |
+| 3 | `Series` | Serial TV, extinde `Media`; conține o listă de `Episode` |
+| 4 | `Episode` | Episod dintr-un serial, cu număr, sezon și durată |
+| 5 | `User` | Utilizator al aplicației (username, vârstă, email, watchlist) |
+| 6 | `Admin` | Utilizator cu drepturi de administrare, extinde `User` |
+| 7 | `WatchEntry` | Înregistrare de vizionare: leagă un `User` de un titlu/episod, rating și comentariu |
+| 8 | `Comment` | Comentariu asociat unui `WatchEntry` |
+| 9 | `Character` | Personaj dintr-o producție (parte din cast) |
+| 10 | `Post` | Postare publicată de un `Admin` |
+| 11 | `ServiceData` | Container de stare în memorie partajat între servicii |
+| 12 | `Repository<T>` | Interfață generică pentru operații CRUD în baza de date |
+
+## Acțiuni & Interogări
+
+| Număr | Acțiune | Serviciu | Descriere |
+|-------|---------|----------|-----------|
+| 1 | Afișare utilizatori | `UserService` | Listează toți utilizatorii înregistrați |
+| 2 | Afișare media | `UserService` | Listează toate filmele și serialele |
+| 3 | Afișare genuri | `UserService` | Afișează toate genurile disponibile |
+| 4 | Adaugă utilizator | `UserService` | Creează un utilizator nou (username, vârstă, email) |
+| 5 | Adaugă film | `AdminService` | Adaugă un film nou (doar admin) |
+| 6 | Adaugă serial | `AdminService` | Adaugă un serial nou (doar admin) |
+| 7 | Caută după titlu | `UserService` | Caută titluri după un șir de caractere |
+| 8 | Afișare doar filme | `UserService` | Filtrează și afișează numai filmele |
+| 9 | Afișare doar seriale | `UserService` | Filtrează și afișează numai serialele |
+| 10 | Filtrare după gen | `UserService` | Returnează toate titlurile dintr-un gen specificat |
+| 11 | Afișare cast | `UserService` | Afișează distribuția (cast) pentru o producție |
+| 12 | Adaugă episod | `AdminService` | Adaugă un episod la un serial existent (doar admin) |
+| 13 | Review cu rating și comentariu | `UserService` | Creează un `WatchEntry` complet cu rating și comentariu |
+| 14 | Creare watch entry | `UserService` | Înregistrează o vizionare, opțional cu comentariu și personaj favorit |
+| 15 | Afișare comentarii | `UserService` | Afișează toate comentariile pentru o producție |
+| 16 | Afișare profil | `UserService` | Afișează profilul unui utilizator cu istoricul de vizionări |
+| 17 | Top săptămână | `UserService` | Listează cele mai populare titluri pe baza vizionărilor |
+| 18 | Recomandări personalizate | `UserService` | Sugerează titluri pe baza genurilor urmărite de utilizator |
+| 19 | Adaugă în watchlist | `UserService` | Adaugă un titlu în watchlist-ul unui utilizator |
+| 20 | Afișare watchlist | `UserService` | Afișează toate titlurile din watchlist-ul unui utilizator |
+| 21 | Șterge din watchlist | `UserService` | Elimină un titlu din watchlist-ul unui utilizator |
+| 22 | Ieșire | — | Închide aplicația |
+
 ## Implemented Menu Actions
 
 When `Main` runs, the CLI offers these actions:

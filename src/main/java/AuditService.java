@@ -12,7 +12,6 @@ public class AuditService {
     private static AuditService instance;
 
     private AuditService() {
-        // Scriem header-ul doar daca fisierul e nou/gol
         try (PrintWriter pw = new PrintWriter(new FileWriter(CSV_PATH, true))) {
             java.io.File f = new java.io.File(CSV_PATH);
             if (f.length() == 0) {
