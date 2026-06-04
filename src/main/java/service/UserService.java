@@ -73,7 +73,7 @@ public class UserService {
         return true;
     }
 
-    public boolean addReviewToWatchEntry(WatchEntry watchEntry, double rating, Comment comment) {
+    public boolean addReviewToWatchEntry(WatchEntry watchEntry, double rating, Comment comment) throws InvalidRatingException {
         boolean ratingAdded = addRating(watchEntry, rating);
         if (!ratingAdded) {
             return false;
