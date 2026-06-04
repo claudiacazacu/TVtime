@@ -3,7 +3,15 @@ package service;
 import exception.InvalidRatingException;
 import exception.MediaNotFoundException;
 import exception.UserNotFoundException;
-import model.*;
+import model.Admin;
+import model.Comment;
+import model.Episode;
+import model.Media;
+import model.Movie;
+import model.Post;
+import model.Series;
+import model.User;
+import model.WatchEntry;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -158,7 +166,7 @@ public class UserService {
             return;
         }
 
-        for (Map.Entry<String, Character> castEntry : media.getCast().entrySet()) {
+        for (Map.Entry<String, model.Character> castEntry : media.getCast().entrySet()) {
             System.out.println(castEntry.getKey() + " -> " + castEntry.getValue());
         }
     }
