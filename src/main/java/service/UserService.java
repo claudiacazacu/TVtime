@@ -48,7 +48,6 @@ public class UserService {
     public void addWatchEntry(WatchEntry watchEntry) {
         if (watchEntry != null) {
             data.getWatchEntries().add(watchEntry);
-            // Auto-remove din watchlist cand utilizatorul marcheaza ca a vazut titlul
             watchEntry.getUser().removeFromWatchlist(watchEntry.getMedia());
         }
     }
@@ -467,7 +466,6 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    // ===== WATCHLIST =====
 
     public boolean addToWatchlist(String username, String mediaTitle) {
         User user = findUserByUsername(username);
