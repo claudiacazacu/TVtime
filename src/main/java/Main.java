@@ -1,6 +1,13 @@
 import config.DatabaseConnection;
 import exception.*;
-import model.*;
+import model.Admin;
+import model.Comment;
+import model.Episode;
+import model.Media;
+import model.Movie;
+import model.Series;
+import model.User;
+import model.WatchEntry;
 import service.*;
 
 import java.sql.Connection;
@@ -297,7 +304,7 @@ public class Main {
                             userService.addComment(newWatchEntry, new Comment(watchUser.getUsername(), watchCommentText));
                         }
                         if (!favoriteCharacterName.trim().isEmpty()) {
-                            for (Character character : watchMedia.getCast().values()) {
+                            for (model.Character character : watchMedia.getCast().values()) {
                                 if (character.getName().equalsIgnoreCase(favoriteCharacterName)) {
                                     newWatchEntry.setFavCharacter(character);
                                     break;
@@ -335,7 +342,7 @@ public class Main {
 
                 case 17:
                     audit.log("top_saptamana");
-                    userService.topWeek(userService.data.getWatchEntries());
+                    userService.topWeek(userService.getData().getWatchEntries());
                     break;
 
                 case 18:

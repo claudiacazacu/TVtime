@@ -19,6 +19,10 @@ import java.util.stream.Collectors;
 public class UserService {
     protected final ServiceData data;
 
+    public ServiceData getData() {
+        return data;
+    }
+
     public UserService() {
         this(new ServiceData());
     }
