@@ -1,57 +1,37 @@
 # TV Time
 
-TV Time is a console-based Java application for managing users, movies, series, reviews, and watch history in a small personal watch-tracking system. The project focuses on object-oriented design and uses text files as seed data.
+Aplicație Java de tip consolă pentru urmărirea filmelor și serialelor vizionate, cu suport pentru utilizatori, recenzii, recomandări și administrare completă prin CRUD.
 
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Language](https://img.shields.io/badge/language-Java-orange)
-![OOP](https://img.shields.io/badge/OOP-project-blue)
+![OOP](https://img.shields.io/badge/OOP-PAO-blue)
 
-## Overview
+---
 
-The application loads users, movies, and series from the `data/` folder, connects to a PostgreSQL database, and exposes a CLI menu for browsing and updating the library.
+## Descriere
 
-The current implementation includes:
+TV Time permite utilizatorilor să înregistreze vizionări, să adauge recenzii cu rating și comentariu, să vadă topul săptămânii și să primească recomandări personalizate pe baza preferințelor lor. Adminul gestionează biblioteca de conținut prin operații CRUD complete, persistate în PostgreSQL.
 
-- a `Media` hierarchy with `Movie` and `Series`
-- episode support through the `Episode` class
-- user management through the `User` model
-- admin support through `Admin extends User`
-- service separation through `UserService` and `AdminService`
-- title search and genre filtering
-- cast storage on each media item
-- review data through `WatchEntry` and `Comment`
-- watch history, profile display, and watchlist management
-- admin post support through `Post`
-- file-based bootstrap data via `FileService`
-- PostgreSQL persistence via a `Repository<T>` interface and concrete implementations
-- audit logging to `data/audit.csv` via `AuditService` (Singleton)
-- 5 excepții custom în pachetul `exception/`
+---
 
-## Most recent updates
+## Concepte POO utilizate
 
-**Exception handling:** the project defines 5 custom checked exceptions in the `exception/` package: `MediaNotFoundException`, `UserNotFoundException`, `InvalidRatingException`, `UnauthorizedAccessException`, `DuplicateMediaException`. These are thrown by `AdminService` and `UserService` and caught with `try-catch` in `Main`.
+| Concept | Implementare |
+|---------|-------------|
+| **Clasă abstractă** | `Media` — bază pentru `Movie` și `Series` |
+| **Moștenire** | `Movie extends Media`, `Series extends Media`, `Admin extends User` |
+| **Polimorfism** | Colecții de tip `List<Media>` conțin atât `Movie` cât și `Series` |
+| **Encapsulare** | Atribute `private` cu getteri/setteri în toate modelele |
+| **Interfață generică** | `Repository<T>` cu metode CRUD abstracte |
+| **Design Pattern Singleton** | `DatabaseConnection`, `AuditService` |
+| **Design Pattern Service Layer** | `UserService`, `AdminService` separă logica de UI |
+| **Colecții** | `List`, `Set`, `TreeSet`, `Map`, `HashMap`, `HashSet` |
+| **Stream API** | Filtrări, sortări și agregări în `UserService` |
+| **Excepții custom** | 5 excepții checked în pachetul `exception/` |
+| **Fișiere** | Citire date inițiale din CSV, scriere audit în CSV |
+| **Baze de date** | JDBC + PostgreSQL, CRUD complet pe 4 entități |
 
-**Database integration:** the project connects to a local PostgreSQL database (`TvTime`) at startup using a `DatabaseConnection` Singleton. CRUD operations for users, media, episodes, and watch entries are exposed through a generic `Repository<T>` interface with concrete implementations (`UserRepository`, `MediaRepository`, `EpisodeRepository`, `WatchEntryRepository`).
-
-**Audit service:** every menu action is logged with a timestamp to `data/audit.csv` by `AuditService` (Singleton). The CSV is created automatically on first run with a `nume_actiune,timestamp` header.
-
-**Watchlist:** users can add, view, and remove titles from a personal watchlist (menu options 19–21).
-
-The service layer is role-separated:
-
-- `UserService` contains functionality available to any user:
-  - `addComment()`, `addRating()` *(throws `InvalidRatingException`)*
-  - `showUserProfile()`, `showCommentsForMedia()` *(throws `UserNotFoundException` / `MediaNotFoundException`)*
-  - `showWatchlist()`, `showRecommendationsForUser()` *(throws `UserNotFoundException`)*
-  - watchlist operations: `addToWatchlist()`, `removeFromWatchlist()`
-- `AdminService` extends `UserService` and contains admin-only operations:
-  - `addMedia()` *(throws `UnauthorizedAccessException`, `DuplicateMediaException`)*
-  - `deleteMedia()` *(throws `UnauthorizedAccessException`, `MediaNotFoundException`)*
-  - `addEpisode()` *(throws `UnauthorizedAccessException`, `MediaNotFoundException`)*
-  - `deleteUser()` *(throws `UnauthorizedAccessException`, `UserNotFoundException`)*
-  - `createPost()` *(throws `UnauthorizedAccessException`)*
-
-Both services work on the same in-memory state through `ServiceData`.
+---
 
 ## Tipuri de obiecte
 
@@ -61,9 +41,9 @@ Both services work on the same in-memory state through `ServiceData`.
 | 2 | `Movie` | Film, extinde `Media` |
 | 3 | `Series` | Serial TV, extinde `Media`; conține o listă de `Episode` |
 | 4 | `Episode` | Episod dintr-un serial, cu număr, sezon și durată |
-| 5 | `User` | Utilizator al aplicației (username, vârstă, email, watchlist) |
+| 5 | `User` | Utilizator al aplicației (username, vârstă, email) |
 | 6 | `Admin` | Utilizator cu drepturi de administrare, extinde `User` |
-| 7 | `WatchEntry` | Înregistrare de vizionare: leagă un `User` de un titlu/episod, rating și comentariu |
+| 7 | `WatchEntry` | Înregistrare de vizionare: leagă un `User` de un titlu, rating și comentariu |
 | 8 | `Comment` | Comentariu asociat unui `WatchEntry` |
 | 9 | `Character` | Personaj dintr-o producție (parte din cast) |
 | 10 | `Post` | Postare publicată de un `Admin` |
@@ -72,33 +52,28 @@ Both services work on the same in-memory state through `ServiceData`.
 | 13 | `MediaNotFoundException` | Excepție aruncată când un titlu nu este găsit |
 | 14 | `UserNotFoundException` | Excepție aruncată când un utilizator nu există |
 | 15 | `InvalidRatingException` | Excepție aruncată când ratingul este în afara intervalului 0–10 |
-| 16 | `UnauthorizedAccessException` | Excepție aruncată la tentativa de operație admin fără drepturi |
+| 16 | `UnauthorizedAccessException` | Excepție aruncată la operație admin fără drepturi |
 | 17 | `DuplicateMediaException` | Excepție aruncată la adăugarea unui titlu deja existent |
+
+---
 
 ## Acțiuni & Interogări
 
-| Număr | Acțiune | Serviciu | Descriere |
-|-------|---------|----------|-----------|
-| 1 | Afișare utilizatori | `UserService` | Listează toți utilizatorii înregistrați |
-| 2 | Afișare media | `UserService` | Listează toate filmele și serialele |
-| 3 | Afișare genuri | `UserService` | Afișează toate genurile disponibile |
-| 4 | Adaugă utilizator | `UserService` | Creează un utilizator nou (username, vârstă, email) |
-| 5 | Adaugă film | `AdminService` | Adaugă un film nou (doar admin) |
-| 6 | Adaugă serial | `AdminService` | Adaugă un serial nou (doar admin) |
-| 7 | Caută după titlu | `UserService` | Caută titluri după un șir de caractere |
-| 8 | Afișare doar filme | `UserService` | Filtrează și afișează numai filmele |
-| 9 | Afișare doar seriale | `UserService` | Filtrează și afișează numai serialele |
-| 10 | Filtrare după gen | `UserService` | Returnează toate titlurile dintr-un gen specificat |
-| 11 | Adaugă episod | `AdminService` | Adaugă un episod la un serial existent (doar admin) |
-| 12 | Review cu rating și comentariu | `UserService` | Creează un `WatchEntry` complet cu rating și comentariu |
-| 13 | Creare watch entry | `UserService` | Înregistrează o vizionare, opțional cu comentariu |
-| 14 | Afișare profil | `UserService` | Afișează profilul unui utilizator cu istoricul de vizionări |
-| 15 | Top săptămână | `UserService` | Listează cele mai populare titluri pe baza vizionărilor |
-| 16 | Recomandări personalizate | `UserService` | Sugerează titluri pe baza genurilor urmărite de utilizator |
-| 17 | CRUD Utilizator | `UserRepository` | Create / Read / Update / Delete utilizatori în PostgreSQL |
-| 18 | CRUD Film | `MediaRepository` | Create / Read / Update / Delete filme în PostgreSQL |
-| 19 | CRUD Serial | `MediaRepository` | Create / Read / Update / Delete seriale în PostgreSQL |
-| 20 | CRUD Episod | `EpisodeRepository` | Create / Read / Update / Delete episoade în PostgreSQL |
+| Nr. | Acțiune | Serviciu | Descriere |
+|-----|---------|----------|-----------|
+| 1 | Top săptămână | `UserService` | Calculează scorul de popularitate pentru fiecare titlu |
+| 2 | Recomandări personalizate | `UserService` | Sugerează titluri pe baza genurilor preferate și ratingului comunității |
+| 3 | Adaugă watch entry | `UserService` | Înregistrează o vizionare cu rating și comentariu opțional |
+| 4 | Adaugă review | `UserService` | Creează un `WatchEntry` complet cu rating și comentariu |
+| 5 | Afișează profil | `UserService` | Afișează istoricul de vizionări al unui utilizator |
+| 6 | CRUD Utilizator | `UserRepository` | Create / Read / Update / Delete utilizatori în PostgreSQL |
+| 7 | CRUD Film | `MediaRepository` | Create / Read / Update / Delete filme în PostgreSQL |
+| 8 | CRUD Serial | `MediaRepository` | Create / Read / Update / Delete seriale în PostgreSQL |
+| 9 | CRUD Episod | `EpisodeRepository` | Create / Read / Update / Delete episoade în PostgreSQL |
+| 10 | Adaugă episod | `AdminService` | Adaugă un episod la un serial existent |
+| 11 | Creează post | `AdminService` | Publică o postare de admin |
+
+---
 
 ## Meniu
 
@@ -119,8 +94,9 @@ TV TIME
       └── 3. Creează post
 ```
 
+---
 
-## Project Structure
+## Structura proiectului
 
 ```text
 TVtime/
@@ -167,17 +143,24 @@ TVtime/
 `-- README.md
 ```
 
-## Data Files
+---
 
-The application reads starter records from:
+## Date inițiale
 
-- `data/users.txt`
-- `data/movies.txt`
-- `data/series.txt`
+La pornire, aplicația încarcă date din:
 
-Each file uses comma-separated values and is loaded at startup by `FileService`. All subsequent write operations go to the PostgreSQL database. Audit logs are written to `data/audit.csv`.
+- `data/users.txt` — utilizatori (username, vârstă, email)
+- `data/movies.txt` — filme (titlu, dată, gen, descriere, director, companie)
+- `data/series.txt` — seriale (titlu, dată, gen, descriere, director, companie)
 
+Fișierele sunt în format CSV și sunt procesate de `FileService`. Operațiile ulterioare sunt persistate în PostgreSQL. Fiecare acțiune din meniu este logată cu timestamp în `data/audit.csv` de către `AuditService`.
 
-## Academic Context
+---
 
-PAO - FMI - UNIBUC
+## Baza de date
+
+Conexiunea la PostgreSQL se face prin `DatabaseConnection` (Singleton) la adresa `localhost:5432/TvTime`. Tabelele utilizate: `users`, `media`, `episodes`, `watch_entries`.
+
+---
+
+*PAO — FMI — UNIBUC*
