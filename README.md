@@ -89,45 +89,35 @@ Both services work on the same in-memory state through `ServiceData`.
 | 8 | Afișare doar filme | `UserService` | Filtrează și afișează numai filmele |
 | 9 | Afișare doar seriale | `UserService` | Filtrează și afișează numai serialele |
 | 10 | Filtrare după gen | `UserService` | Returnează toate titlurile dintr-un gen specificat |
-| 11 | Afișare cast | `UserService` | Afișează distribuția (cast) pentru o producție |
-| 12 | Adaugă episod | `AdminService` | Adaugă un episod la un serial existent (doar admin) |
-| 13 | Review cu rating și comentariu | `UserService` | Creează un `WatchEntry` complet cu rating și comentariu |
-| 14 | Creare watch entry | `UserService` | Înregistrează o vizionare, opțional cu comentariu și personaj favorit |
-| 15 | Afișare comentarii | `UserService` | Afișează toate comentariile pentru o producție |
-| 16 | Afișare profil | `UserService` | Afișează profilul unui utilizator cu istoricul de vizionări |
-| 17 | Top săptămână | `UserService` | Listează cele mai populare titluri pe baza vizionărilor |
-| 18 | Recomandări personalizate | `UserService` | Sugerează titluri pe baza genurilor urmărite de utilizator |
-| 19 | Adaugă în watchlist | `UserService` | Adaugă un titlu în watchlist-ul unui utilizator |
-| 20 | Afișare watchlist | `UserService` | Afișează toate titlurile din watchlist-ul unui utilizator |
-| 21 | Șterge din watchlist | `UserService` | Elimină un titlu din watchlist-ul unui utilizator |
-| 22 | Ieșire | — | Închide aplicația |
+| 11 | Adaugă episod | `AdminService` | Adaugă un episod la un serial existent (doar admin) |
+| 12 | Review cu rating și comentariu | `UserService` | Creează un `WatchEntry` complet cu rating și comentariu |
+| 13 | Creare watch entry | `UserService` | Înregistrează o vizionare, opțional cu comentariu |
+| 14 | Afișare profil | `UserService` | Afișează profilul unui utilizator cu istoricul de vizionări |
+| 15 | Top săptămână | `UserService` | Listează cele mai populare titluri pe baza vizionărilor |
+| 16 | Recomandări personalizate | `UserService` | Sugerează titluri pe baza genurilor urmărite de utilizator |
+| 17 | CRUD Utilizator | `UserRepository` | Create / Read / Update / Delete utilizatori în PostgreSQL |
+| 18 | CRUD Film | `MediaRepository` | Create / Read / Update / Delete filme în PostgreSQL |
+| 19 | CRUD Serial | `MediaRepository` | Create / Read / Update / Delete seriale în PostgreSQL |
+| 20 | CRUD Episod | `EpisodeRepository` | Create / Read / Update / Delete episoade în PostgreSQL |
 
-## Implemented Menu Actions
+## Meniu
 
-When `Main` runs, the CLI offers these actions:
-
-1. Show all users
-2. Show all media
-3. Show all genres
-4. Add a user
-5. Add a movie
-6. Add a series
-7. Search media by title
-8. Show only movies
-9. Show only series
-10. Filter media by genre
-11. Show cast for a production
-12. Add an episode to a series
-13. Create a watch entry review with rating and comment
-14. Create a watch entry
-15. Show comments for a production
-16. Show user profile
-17. Weekly top
-18. Personalized recommendations
-19. Add to watchlist
-20. Show user watchlist
-21. Remove from watchlist
-22. Exit
+```
+TV TIME
+├── 1. Top săptămânii
+├── 2. Recomandări personalizate
+├── 3. Adaugă watch entry
+├── 4. Adaugă review (rating + comentariu)
+├── 5. Afișează profil utilizator
+└── 99. ADMIN
+      ├── 1. CRUD
+      │     ├── 1. Utilizator  →  Create / Read / Update / Delete
+      │     ├── 2. Film        →  Create / Read / Update / Delete
+      │     ├── 3. Serial      →  Create / Read / Update / Delete
+      │     └── 4. Episod      →  Create / Read / Update / Delete
+      ├── 2. Adaugă episod la serial
+      └── 3. Creează post
+```
 
 
 ## Project Structure
