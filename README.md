@@ -147,13 +147,9 @@ TVtime/
 
 ## Date inițiale
 
-La pornire, aplicația încarcă date din:
+La pornire, aplicația se conectează la PostgreSQL și încarcă automat toți utilizatorii și toate titlurile din baza de date în memorie. Dacă conexiunea eșuează, aplicația nu pornește.
 
-- `data/users.txt` — utilizatori (username, vârstă, email)
-- `data/movies.txt` — filme (titlu, dată, gen, descriere, director, companie)
-- `data/series.txt` — seriale (titlu, dată, gen, descriere, director, companie)
-
-Fișierele sunt în format CSV și sunt procesate de `FileService`. Operațiile ulterioare sunt persistate în PostgreSQL. Fiecare acțiune din meniu este logată cu timestamp în `data/audit.csv` de către `AuditService`.
+Fiecare acțiune din meniu este logată cu timestamp în `data/audit.csv` de către `AuditService`.
 
 ---
 

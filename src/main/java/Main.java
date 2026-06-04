@@ -17,7 +17,6 @@ import service.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -35,12 +34,9 @@ public class Main {
             System.out.println("Conectat la PostgreSQL: " + !conn.isClosed());
         } catch (SQLException e) {
             System.out.println("Eroare conexiune BD: " + e.getMessage());
+            System.out.println("Aplicatia nu poate porni fara conexiune la baza de date.");
+            return;
         }
-
-        FileService fs = new FileService();
-        ArrayList<User> users = fs.readUsers("data/users.txt");
-        ArrayList<Series> series = fs.readSeries("data/series.txt");
-        ArrayList<Movie> movies = fs.readMovies("data/movies.txt");
 
         audit = AuditService.getInstance();
         ServiceData serviceData = new ServiceData();
@@ -48,14 +44,20 @@ public class Main {
         adminService = new AdminService(serviceData);
         admin = new Admin("admin", 30, "admin@tvtime.com");
 
-        for (User u : users) userService.addUser(u);
-        for (Series s : series) {
-            try { adminService.addMedia(admin, s); }
-            catch (Exception e) { System.out.println("Eroare incarcare: " + e.getMessage()); }
-        }
-        for (Movie m : movies) {
-            try { adminService.addMedia(admin, m); }
-            catch (Exception e) { System.out.println("Eroare incarcare: " + e.getMessage()); }
+        // Incarcare date din PostgreSQL
+        try {
+            List<User> users = UserRepository.getInstance().findAll();
+            for (User u : users) userService.addUser(u);
+            System.out.println("Utilizatori incarcati din DB: " + users.size());
+
+            List<Media> media = MediaRepository.getInstance().findAll();
+            for (Media m : media) {
+                try { adminService.addMedia(admin, m); }
+                catch (Exception ignored) {}
+            }
+            System.out.println("Titluri incarcate din DB: " + media.size());
+        } catch (SQLException e) {
+            System.out.println("Eroare la incarcare date din DB: " + e.getMessage());
         }
 
         menuPrincipal();
