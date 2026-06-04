@@ -87,7 +87,14 @@ public class Main {
             System.out.println("19 - Adauga la watchlist");
             System.out.println("20 - Afiseaza watchlist utilizator");
             System.out.println("21 - Sterge din watchlist");
-            System.out.println("22 - Iesire");
+            System.out.println("--- Admin CRUD ---");
+            System.out.println("22 - Sterge utilizator");
+            System.out.println("23 - Sterge media");
+            System.out.println("24 - Actualizeaza utilizator");
+            System.out.println("25 - Actualizeaza media");
+            System.out.println("26 - Afiseaza toti utilizatorii din DB");
+            System.out.println("27 - Afiseaza toata media din DB");
+            System.out.println("0  - Iesire");
             System.out.print("\nOptiunea aleasa este ... ");
             optiune = scanner.nextInt();
             scanner.nextLine();
@@ -434,12 +441,109 @@ public class Main {
                     break;
 
                 case 22:
+                    audit.log("sterge_utilizator");
+                    System.out.print("Username de sters: ");
+                    String delUsername = scanner.nextLine();
+                    try {
+                        adminService.deleteUser(admin, delUsername);
+                        UserRepository.getInstance().deleteByUsername(delUsername);
+                        System.out.println("Utilizatorul a fost sters.");
+                    } catch (UserNotFoundException e) {
+                        System.out.println("Eroare: " + e.getMessage());
+                    } catch (UnauthorizedAccessException e) {
+                        System.out.println("Acces interzis: " + e.getMessage());
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare: " + e.getMessage());
+                    }
+                    break;
+
+                case 23:
+                    audit.log("sterge_media");
+                    System.out.print("Titlu media de sters: ");
+                    String delTitle = scanner.nextLine();
+                    try {
+                        adminService.deleteMedia(admin, delTitle);
+                        int delId = MediaRepository.getInstance().findIdByTitle(delTitle);
+                        if (delId != -1) MediaRepository.getInstance().delete(delId);
+                        System.out.println("Media a fost stearsa.");
+                    } catch (MediaNotFoundException e) {
+                        System.out.println("Eroare: " + e.getMessage());
+                    } catch (UnauthorizedAccessException e) {
+                        System.out.println("Acces interzis: " + e.getMessage());
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare: " + e.getMessage());
+                    }
+                    break;
+
+                case 24:
+                    audit.log("actualizeaza_utilizator");
+                    System.out.print("Username de actualizat: ");
+                    String updUsername = scanner.nextLine();
+                    User updUser = userService.findUserByUsername(updUsername);
+                    if (updUser == null) { System.out.println("Utilizatorul nu exista."); break; }
+                    System.out.print("Varsta noua (" + updUser.getAge() + "): ");
+                    String newAgeStr = scanner.nextLine();
+                    System.out.print("Email nou (" + updUser.getEmail() + "): ");
+                    String newEmail = scanner.nextLine();
+                    if (!newAgeStr.trim().isEmpty()) updUser.setAge(Integer.parseInt(newAgeStr.trim()));
+                    if (!newEmail.trim().isEmpty()) updUser.setEmail(newEmail.trim());
+                    try {
+                        UserRepository.getInstance().update(updUser);
+                        System.out.println("Utilizatorul a fost actualizat.");
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare: " + e.getMessage());
+                    }
+                    break;
+
+                case 25:
+                    audit.log("actualizeaza_media");
+                    System.out.print("Titlu media de actualizat: ");
+                    String updTitle = scanner.nextLine();
+                    Media updMedia = userService.findMediaByExactTitle(updTitle);
+                    if (updMedia == null) { System.out.println("Media nu exista."); break; }
+                    System.out.print("Gen nou (" + updMedia.getGenre() + "): ");
+                    String newGenre = scanner.nextLine();
+                    System.out.print("Descriere noua (" + updMedia.getDescription() + "): ");
+                    String newDesc = scanner.nextLine();
+                    if (!newGenre.trim().isEmpty()) updMedia.setGenre(newGenre.trim());
+                    if (!newDesc.trim().isEmpty()) updMedia.setDescription(newDesc.trim());
+                    try {
+                        MediaRepository.getInstance().update(updMedia);
+                        System.out.println("Media a fost actualizata.");
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare: " + e.getMessage());
+                    }
+                    break;
+
+                case 26:
+                    audit.log("citire_utilizatori_db");
+                    try {
+                        java.util.List<User> dbUsers = UserRepository.getInstance().findAll();
+                        System.out.println("Utilizatori in DB (" + dbUsers.size() + "):");
+                        for (User u : dbUsers) System.out.println("  " + u);
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare: " + e.getMessage());
+                    }
+                    break;
+
+                case 27:
+                    audit.log("citire_media_db");
+                    try {
+                        java.util.List<Media> dbMedia = MediaRepository.getInstance().findAll();
+                        System.out.println("Media in DB (" + dbMedia.size() + "):");
+                        for (Media m : dbMedia) System.out.println("  " + m);
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare: " + e.getMessage());
+                    }
+                    break;
+
+                case 0:
                     System.out.println("iesim");
                     break;
 
                 default:
                     System.out.println("optiune invalida");
             }
-        } while (optiune != 22);
+        } while (optiune != 0);
     }
 }
