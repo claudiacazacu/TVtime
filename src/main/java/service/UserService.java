@@ -1,5 +1,8 @@
 package service;
 
+import exception.InvalidRatingException;
+import exception.MediaNotFoundException;
+import exception.UserNotFoundException;
 import model.*;
 
 import java.time.LocalDate;
@@ -47,11 +50,13 @@ public class UserService {
         return true;
     }
 
-    public boolean addRating(WatchEntry watchEntry, double rating) {
-        if (watchEntry == null || rating < 0.0 || rating > 10.0) {
+    public boolean addRating(WatchEntry watchEntry, double rating) throws InvalidRatingException {
+        if (rating < 0.0 || rating > 10.0) {
+            throw new InvalidRatingException(rating);
+        }
+        if (watchEntry == null) {
             return false;
         }
-
         watchEntry.setRating(rating);
         return true;
     }
@@ -154,11 +159,10 @@ public class UserService {
         }
     }
 
-    public void showCommentsForMedia(String title) {
+    public void showCommentsForMedia(String title) throws MediaNotFoundException {
         Media media = findMediaByExactTitle(title);
         if (media == null) {
-            System.out.println("Productia nu exista.");
-            return;
+            throw new MediaNotFoundException(title);
         }
 
         boolean hasComments = false;
@@ -198,11 +202,10 @@ public class UserService {
         return filteredEntries;
     }
 
-    public void showUserProfile(String username) {
+    public void showUserProfile(String username) throws UserNotFoundException {
         User user = findUserByUsername(username);
         if (user == null) {
-            System.out.println("Utilizatorul nu exista.");
-            return;
+            throw new UserNotFoundException(username);
         }
 
         boolean hasWatchEntries = false;
@@ -472,11 +475,10 @@ public class UserService {
         return user.removeFromWatchlist(media);
     }
 
-    public void showWatchlist(String username) {
+    public void showWatchlist(String username) throws UserNotFoundException {
         User user = findUserByUsername(username);
         if (user == null) {
-            System.out.println("Utilizatorul nu exista.");
-            return;
+            throw new UserNotFoundException(username);
         }
         if (user.getWatchlist().isEmpty()) {
             System.out.println("Watchlist-ul lui " + username + " este gol.");
@@ -496,11 +498,10 @@ public class UserService {
                 });
     }
 
-    public void showRecommendationsForUser(String username, int topN) {
+    public void showRecommendationsForUser(String username, int topN) throws UserNotFoundException {
         User user = findUserByUsername(username);
         if (user == null) {
-            System.out.println("Utilizatorul nu exista.");
-            return;
+            throw new UserNotFoundException(username);
         }
 
         List<Media> recommendations = getRecommendationsForUser(username, topN);

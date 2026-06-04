@@ -1,5 +1,9 @@
 package service;
 
+import exception.DuplicateMediaException;
+import exception.MediaNotFoundException;
+import exception.UnauthorizedAccessException;
+import exception.UserNotFoundException;
 import model.*;
 
 public class AdminService extends UserService {
@@ -12,74 +16,68 @@ public class AdminService extends UserService {
         super(data);
     }
 
-    public boolean addMedia(Admin admin, Media media) {
-        if (!hasAdminAccess(admin) || media == null) {
-            return false;
+    public void addMedia(Admin admin, Media media)
+            throws UnauthorizedAccessException, DuplicateMediaException {
+        if (admin == null || !admin.isAdmin()) {
+            throw new UnauthorizedAccessException(admin != null ? admin.getUsername() : "null");
         }
-
+        if (media == null) return;
+        if (findMediaByExactTitle(media.getTitle()) != null) {
+            throw new DuplicateMediaException(media.getTitle());
+        }
         data.getMediaLibrary().add(media);
         data.getGenres().add(media.getGenre());
-        return true;
     }
 
-    public boolean deleteMedia(Admin admin, String mediaTitle) {
-        if (!hasAdminAccess(admin)) {
-            return false;
+    public void deleteMedia(Admin admin, String mediaTitle)
+            throws UnauthorizedAccessException, MediaNotFoundException {
+        if (admin == null || !admin.isAdmin()) {
+            throw new UnauthorizedAccessException(admin != null ? admin.getUsername() : "null");
         }
-
         Media media = findMediaByExactTitle(mediaTitle);
         if (media == null) {
-            return false;
+            throw new MediaNotFoundException(mediaTitle);
         }
-
         data.getMediaLibrary().remove(media);
-        data.getWatchEntries().removeIf(watchEntry ->
-                watchEntry.getMedia().getTitle().equalsIgnoreCase(media.getTitle()));
+        data.getWatchEntries().removeIf(we ->
+                we.getMedia().getTitle().equalsIgnoreCase(media.getTitle()));
         refreshGenres();
-        return true;
     }
 
-    public boolean addEpisode(Admin admin, String seriesTitle, Episode episode) {
-        if (!hasAdminAccess(admin) || episode == null) {
-            return false;
+    public void addEpisode(Admin admin, String seriesTitle, Episode episode)
+            throws UnauthorizedAccessException, MediaNotFoundException {
+        if (admin == null || !admin.isAdmin()) {
+            throw new UnauthorizedAccessException(admin != null ? admin.getUsername() : "null");
         }
-
         Media media = findMediaByExactTitle(seriesTitle);
         if (!(media instanceof Series)) {
-            return false;
+            throw new MediaNotFoundException(seriesTitle);
         }
-
         ((Series) media).addEpisode(episode);
-        return true;
     }
 
-    public boolean deleteUser(Admin admin, String username) {
-        if (!hasAdminAccess(admin)) {
-            return false;
+    public void deleteUser(Admin admin, String username)
+            throws UnauthorizedAccessException, UserNotFoundException {
+        if (admin == null || !admin.isAdmin()) {
+            throw new UnauthorizedAccessException(admin != null ? admin.getUsername() : "null");
         }
-
         User user = findUserByUsername(username);
         if (user == null) {
-            return false;
+            throw new UserNotFoundException(username);
         }
-
         data.getUsers().remove(user);
-        data.getWatchEntries().removeIf(watchEntry ->
-                watchEntry.getUser().getUsername().equalsIgnoreCase(user.getUsername()));
-        return true;
+        data.getWatchEntries().removeIf(we ->
+                we.getUser().getUsername().equalsIgnoreCase(user.getUsername()));
     }
 
-    public boolean createPost(Admin admin, String text) {
-        if (!hasAdminAccess(admin) || text == null || text.trim().isEmpty()) {
-            return false;
+    public void createPost(Admin admin, String text)
+            throws UnauthorizedAccessException {
+        if (admin == null || !admin.isAdmin()) {
+            throw new UnauthorizedAccessException(admin != null ? admin.getUsername() : "null");
         }
-
-        data.getPosts().add(new Post(admin, text.trim()));
-        return true;
-    }
-
-    private boolean hasAdminAccess(Admin admin) {
-        return admin != null && admin.isAdmin();
+        if (text != null && !text.trim().isEmpty()) {
+            data.getPosts().add(new Post(admin, text.trim()));
+        }
     }
 
     private void refreshGenres() {
