@@ -522,7 +522,6 @@ public class UserService {
         }
 
         System.out.println("\nRecomandari personalizate pentru " + username + ":");
-        System.out.println("(bazate pe preferintele tale de gen + ratingul comunitatii + popularitate)");
 
         int index = 1;
         for (Media media : recommendations) {
