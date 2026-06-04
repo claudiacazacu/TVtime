@@ -140,7 +140,6 @@ public class MediaRepository implements Repository<Media> {
         }
     }
 
-    @Override
     public int findIdByTitle(String title) throws SQLException {
         String sql = "SELECT id FROM media WHERE LOWER(title) = LOWER(?)";
         try (PreparedStatement ps = conn().prepareStatement(sql)) {
