@@ -25,23 +25,31 @@ The current implementation includes:
 - file-based bootstrap data via `FileService`
 - PostgreSQL persistence via a `Repository<T>` interface and concrete implementations
 - audit logging to `data/audit.csv` via `AuditService` (Singleton)
+- 5 excepții custom în pachetul `exception/`
 
 ## Most recent updates
 
-**Database integration:** the project now connects to a local PostgreSQL database (`TvTime`) at startup using a `DatabaseConnection` Singleton. CRUD operations for users, media, episodes, and watch entries are exposed through a generic `Repository<T>` interface with concrete implementations (`UserRepository`, `MediaRepository`, `EpisodeRepository`, `WatchEntryRepository`), each using the Singleton connection.
+**Exception handling:** the project defines 5 custom checked exceptions in the `exception/` package: `MediaNotFoundException`, `UserNotFoundException`, `InvalidRatingException`, `UnauthorizedAccessException`, `DuplicateMediaException`. These are thrown by `AdminService` and `UserService` and caught with `try-catch` in `Main`.
+
+**Database integration:** the project connects to a local PostgreSQL database (`TvTime`) at startup using a `DatabaseConnection` Singleton. CRUD operations for users, media, episodes, and watch entries are exposed through a generic `Repository<T>` interface with concrete implementations (`UserRepository`, `MediaRepository`, `EpisodeRepository`, `WatchEntryRepository`).
 
 **Audit service:** every menu action is logged with a timestamp to `data/audit.csv` by `AuditService` (Singleton). The CSV is created automatically on first run with a `nume_actiune,timestamp` header.
 
-**Watchlist:** users can now add, view, and remove titles from a personal watchlist (menu options 19–21).
+**Watchlist:** users can add, view, and remove titles from a personal watchlist (menu options 19–21).
 
-The service layer remains role-separated:
+The service layer is role-separated:
 
 - `UserService` contains functionality available to any user:
-  - `addComment()`, `addRating()`, `showWatchHistory()`, `filterCommentsByRating()`
-  - watchlist operations: `addToWatchlist()`, `showWatchlist()`, `removeFromWatchlist()`
-  - user/profile/media browsing helpers
+  - `addComment()`, `addRating()` *(throws `InvalidRatingException`)*
+  - `showUserProfile()`, `showCommentsForMedia()` *(throws `UserNotFoundException` / `MediaNotFoundException`)*
+  - `showWatchlist()`, `showRecommendationsForUser()` *(throws `UserNotFoundException`)*
+  - watchlist operations: `addToWatchlist()`, `removeFromWatchlist()`
 - `AdminService` extends `UserService` and contains admin-only operations:
-  - `addMedia()`, `deleteMedia()`, `addEpisode()`, `deleteUser()`, `createPost()`
+  - `addMedia()` *(throws `UnauthorizedAccessException`, `DuplicateMediaException`)*
+  - `deleteMedia()` *(throws `UnauthorizedAccessException`, `MediaNotFoundException`)*
+  - `addEpisode()` *(throws `UnauthorizedAccessException`, `MediaNotFoundException`)*
+  - `deleteUser()` *(throws `UnauthorizedAccessException`, `UserNotFoundException`)*
+  - `createPost()` *(throws `UnauthorizedAccessException`)*
 
 Both services work on the same in-memory state through `ServiceData`.
 
@@ -61,6 +69,11 @@ Both services work on the same in-memory state through `ServiceData`.
 | 10 | `Post` | Postare publicată de un `Admin` |
 | 11 | `ServiceData` | Container de stare în memorie partajat între servicii |
 | 12 | `Repository<T>` | Interfață generică pentru operații CRUD în baza de date |
+| 13 | `MediaNotFoundException` | Excepție aruncată când un titlu nu este găsit |
+| 14 | `UserNotFoundException` | Excepție aruncată când un utilizator nu există |
+| 15 | `InvalidRatingException` | Excepție aruncată când ratingul este în afara intervalului 0–10 |
+| 16 | `UnauthorizedAccessException` | Excepție aruncată la tentativa de operație admin fără drepturi |
+| 17 | `DuplicateMediaException` | Excepție aruncată la adăugarea unui titlu deja existent |
 
 ## Acțiuni & Interogări
 
@@ -154,6 +167,12 @@ TVtime/
 |           |   |-- FileService.java
 |           |   |-- ServiceData.java
 |           |   `-- UserService.java
+|           |-- exception/
+|           |   |-- DuplicateMediaException.java
+|           |   |-- InvalidRatingException.java
+|           |   |-- MediaNotFoundException.java
+|           |   |-- UnauthorizedAccessException.java
+|           |   `-- UserNotFoundException.java
 |           `-- Main.java
 `-- README.md
 ```
