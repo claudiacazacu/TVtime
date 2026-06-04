@@ -59,8 +59,6 @@ public class FileService {
         return users;
     }
 
-    //series
-    //public void readSeries(String fileName)
     public ArrayList<Series> readSeries(String fileName){
         ArrayList<Series> series = new ArrayList<>();
          try{
@@ -96,8 +94,6 @@ public class FileService {
          return series;
     }
 
-    //movies
-    //public void readMovies(String fileName)
     public ArrayList<Movie> readMovies(String fileName){
         ArrayList<Movie> movies = new ArrayList<>();
         try{
@@ -134,5 +130,4 @@ public class FileService {
         return movies;
 
     }
-
 }
