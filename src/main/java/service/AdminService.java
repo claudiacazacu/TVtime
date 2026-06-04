@@ -1,3 +1,7 @@
+package service;
+
+import model.*;
+
 public class AdminService extends UserService {
 
     public AdminService() {

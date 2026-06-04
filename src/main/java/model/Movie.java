@@ -1,17 +1,14 @@
-import java.util.ArrayList;
-import java.util.List;
+package model;
 
-public class Series extends Media {
+public class Movie extends Media {
     private String director;
     private String company;
-    private List<Episode> episodes;
 
-    public Series(String title, String releaseDate, String genre, String description,
-                  String director, String company) {
+    public Movie(String title, String releaseDate, String genre, String description,
+                 String director, String company) {
         super(title, releaseDate, genre, description);
         this.director = director;
         this.company = company;
-        this.episodes = new ArrayList<>();
     }
 
     public String getDirector() {
@@ -22,10 +19,6 @@ public class Series extends Media {
         return company;
     }
 
-    public List<Episode> getEpisodes() {
-        return episodes;
-    }
-
     public void setDirector(String director) {
         this.director = director;
     }
@@ -34,24 +27,14 @@ public class Series extends Media {
         this.company = company;
     }
 
-    public void setEpisodes(List<Episode> episodes) {
-        this.episodes = episodes;
-    }
-
-    public void addEpisode(Episode episode) {
-        if (episode != null) {
-            episodes.add(episode);
-        }
-    }
-
     @Override
     public String toString() {
-        return "Series{" +
+        return "Movie{" +
                 "title='" + title + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
                 ", genre='" + genre + '\'' +
                 ", director='" + director + '\'' +
                 ", company='" + company + '\'' +
-                ", episodes=" + episodes.size() +
                 '}';
     }
 }

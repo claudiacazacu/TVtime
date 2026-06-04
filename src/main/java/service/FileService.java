@@ -1,3 +1,9 @@
+package service;
+
+import model.Movie;
+import model.Series;
+import model.User;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

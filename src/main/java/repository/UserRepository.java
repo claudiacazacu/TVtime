@@ -1,3 +1,9 @@
+package repository;
+
+import config.DatabaseConnection;
+import model.Admin;
+import model.User;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

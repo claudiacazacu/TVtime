@@ -1,3 +1,5 @@
+package model;
+
 public class Episode {
     private String title;
     private String releaseDate;

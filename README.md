@@ -122,34 +122,39 @@ When `Main` runs, the CLI offers these actions:
 ```text
 TVtime/
 |-- data/
+|   |-- audit.csv
 |   |-- movies.txt
 |   |-- series.txt
 |   `-- users.txt
 |-- src/
 |   `-- main/
 |       `-- java/
-|           |-- Admin.java
-|           |-- AdminService.java
-|           |-- AuditService.java
-|           |-- Character.java
-|           |-- Comment.java
-|           |-- DatabaseConnection.java
-|           |-- Episode.java
-|           |-- EpisodeRepository.java
-|           |-- FileService.java
-|           |-- Main.java
-|           |-- Media.java
-|           |-- MediaRepository.java
-|           |-- Movie.java
-|           |-- Post.java
-|           |-- Repository.java
-|           |-- Series.java
-|           |-- ServiceData.java
-|           |-- User.java
-|           |-- UserRepository.java
-|           |-- UserService.java
-|           |-- WatchEntry.java
-|           `-- WatchEntryRepository.java
+|           |-- config/
+|           |   `-- DatabaseConnection.java
+|           |-- model/
+|           |   |-- Admin.java
+|           |   |-- Character.java
+|           |   |-- Comment.java
+|           |   |-- Episode.java
+|           |   |-- Media.java
+|           |   |-- Movie.java
+|           |   |-- Post.java
+|           |   |-- Series.java
+|           |   |-- User.java
+|           |   `-- WatchEntry.java
+|           |-- repository/
+|           |   |-- EpisodeRepository.java
+|           |   |-- MediaRepository.java
+|           |   |-- Repository.java
+|           |   |-- UserRepository.java
+|           |   `-- WatchEntryRepository.java
+|           |-- service/
+|           |   |-- AdminService.java
+|           |   |-- AuditService.java
+|           |   |-- FileService.java
+|           |   |-- ServiceData.java
+|           |   `-- UserService.java
+|           `-- Main.java
 `-- README.md
 ```
 

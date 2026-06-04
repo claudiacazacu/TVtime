@@ -1,3 +1,10 @@
+package repository;
+
+import config.DatabaseConnection;
+import model.Media;
+import model.Movie;
+import model.Series;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

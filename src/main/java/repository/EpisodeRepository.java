@@ -1,3 +1,8 @@
+package repository;
+
+import config.DatabaseConnection;
+import model.Episode;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

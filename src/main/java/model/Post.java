@@ -1,3 +1,5 @@
+package model;
+
 public class Post {
     private final Admin author;
     private final String text;

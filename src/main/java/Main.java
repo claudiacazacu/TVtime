@@ -1,3 +1,7 @@
+import config.DatabaseConnection;
+import model.*;
+import service.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
