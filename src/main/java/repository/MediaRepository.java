@@ -141,6 +141,16 @@ public class MediaRepository implements Repository<Media> {
     }
 
     @Override
+    public int findIdByTitle(String title) throws SQLException {
+        String sql = "SELECT id FROM media WHERE LOWER(title) = LOWER(?)";
+        try (PreparedStatement ps = conn().prepareStatement(sql)) {
+            ps.setString(1, title);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("id");
+        }
+        return -1;
+    }
+
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM media WHERE id = ?";
         try (PreparedStatement ps = conn().prepareStatement(sql)) {

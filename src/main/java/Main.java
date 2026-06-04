@@ -8,6 +8,10 @@ import model.Movie;
 import model.Series;
 import model.User;
 import model.WatchEntry;
+import repository.EpisodeRepository;
+import repository.MediaRepository;
+import repository.UserRepository;
+import repository.WatchEntryRepository;
 import service.*;
 
 import java.sql.Connection;
@@ -113,7 +117,13 @@ public class Main {
                     scanner.nextLine();
                     System.out.print("Email: ");
                     String email = scanner.nextLine();
-                    userService.addUser(new User(username, age, email));
+                    User newUser = new User(username, age, email);
+                    userService.addUser(newUser);
+                    try {
+                        UserRepository.getInstance().create(newUser);
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare la salvare user: " + e.getMessage());
+                    }
                     System.out.println("Utilizator adaugat cu succes.");
                     break;
 
@@ -131,13 +141,17 @@ public class Main {
                     String movieDirector = scanner.nextLine();
                     System.out.print("Companie: ");
                     String movieCompany = scanner.nextLine();
+                    Movie newMovie = new Movie(movieTitle, movieReleaseDate, movieGenre, movieDescription, movieDirector, movieCompany);
                     try {
-                        adminService.addMedia(admin, new Movie(movieTitle, movieReleaseDate, movieGenre, movieDescription, movieDirector, movieCompany));
+                        adminService.addMedia(admin, newMovie);
+                        MediaRepository.getInstance().create(newMovie);
                         System.out.println("Filmul a fost adaugat cu succes.");
                     } catch (DuplicateMediaException e) {
                         System.out.println("Eroare: " + e.getMessage());
                     } catch (UnauthorizedAccessException e) {
                         System.out.println("Acces interzis: " + e.getMessage());
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare la salvare film: " + e.getMessage());
                     }
                     break;
 
@@ -155,13 +169,17 @@ public class Main {
                     String seriesDirector = scanner.nextLine();
                     System.out.print("Companie: ");
                     String seriesCompany = scanner.nextLine();
+                    Series newSeries = new Series(seriesTitle, seriesReleaseDate, seriesGenre, seriesDescription, seriesDirector, seriesCompany);
                     try {
-                        adminService.addMedia(admin, new Series(seriesTitle, seriesReleaseDate, seriesGenre, seriesDescription, seriesDirector, seriesCompany));
+                        adminService.addMedia(admin, newSeries);
+                        MediaRepository.getInstance().create(newSeries);
                         System.out.println("Serialul a fost adaugat cu succes.");
                     } catch (DuplicateMediaException e) {
                         System.out.println("Eroare: " + e.getMessage());
                     } catch (UnauthorizedAccessException e) {
                         System.out.println("Acces interzis: " + e.getMessage());
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare la salvare serial: " + e.getMessage());
                     }
                     break;
 
@@ -223,13 +241,20 @@ public class Main {
                     System.out.print("Durata episodului (minute): ");
                     int duration = scanner.nextInt();
                     scanner.nextLine();
+                    Episode newEpisode = new Episode(episodeTitle, episodeReleaseDate, episodeNumber, seasonNumber, duration);
                     try {
-                        adminService.addEpisode(admin, targetSeries, new Episode(episodeTitle, episodeReleaseDate, episodeNumber, seasonNumber, duration));
+                        adminService.addEpisode(admin, targetSeries, newEpisode);
+                        int seriesId = MediaRepository.getInstance().findIdByTitle(targetSeries);
+                        if (seriesId != -1) {
+                            EpisodeRepository.getInstance().create(newEpisode, seriesId);
+                        }
                         System.out.println("Episod adaugat cu succes.");
                     } catch (MediaNotFoundException e) {
                         System.out.println("Eroare: " + e.getMessage());
                     } catch (UnauthorizedAccessException e) {
                         System.out.println("Acces interzis: " + e.getMessage());
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare la salvare episod: " + e.getMessage());
                     }
                     break;
 
@@ -264,9 +289,15 @@ public class Main {
                         userService.addRating(watchEntry, rating);
                         userService.addComment(watchEntry, new Comment(commentAuthor, commentText));
                         userService.addWatchEntry(watchEntry);
+                        int mediaId = MediaRepository.getInstance().findIdByTitle(foundMedia.getTitle());
+                        if (mediaId != -1) {
+                            WatchEntryRepository.getInstance().create(watchEntry, mediaId, null, null);
+                        }
                         System.out.println("Review adaugat cu succes:\n" + watchEntry);
                     } catch (InvalidRatingException e) {
                         System.out.println("Eroare: " + e.getMessage());
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare la salvare review: " + e.getMessage());
                     }
                     break;
 
@@ -312,9 +343,15 @@ public class Main {
                             }
                         }
                         userService.addWatchEntry(newWatchEntry);
+                        int wMediaId = MediaRepository.getInstance().findIdByTitle(watchMedia.getTitle());
+                        if (wMediaId != -1) {
+                            WatchEntryRepository.getInstance().create(newWatchEntry, wMediaId, null, null);
+                        }
                         System.out.println("Watch entry adaugat cu succes.");
                     } catch (InvalidRatingException e) {
                         System.out.println("Eroare: " + e.getMessage());
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("[DB] Eroare la salvare watch entry: " + e.getMessage());
                     }
                     break;
 
